@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Correct import
 import './Register.css';
+import axiosInstance from '../utils/axios';
 
 const Register = () => {
   const navigate = useNavigate(); // Corrected hook name
@@ -29,8 +30,8 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/user/register',
+      const response = await axiosInstance.post(
+        '/user/register',
         formData
       );
       if (response.data.success) {

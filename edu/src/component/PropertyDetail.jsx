@@ -3,8 +3,8 @@ import axiosInstance from '../utils/axios';
 import './PropertyDetail.css';
 import { useNavigate } from 'react-router-dom';
 
-const DataContext = createContext("landlord");
-export const usedata = () => useContext(DataContext)
+// const DataContext = createContext("landlord");
+// export const usedata = () => useContext(DataContext)
 const PropertyDetail = ({ propertyId, onClose, type }) => {
     const [property, setProperty] = useState(null);
     const [loading, setLoading] = useState(true);

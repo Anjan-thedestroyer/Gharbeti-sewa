@@ -17,16 +17,7 @@ const userSchema = new mongoose.Schema({
         required: [true, "Provide password"],
     },
 
-    mobile: {
-        type: Number,
-        default: null,
-        validate: {
-            validator: function (v) {
-                return /^\d{10,15}$/.test(v); // Validates mobile number (10-15 digits)
-            },
-            message: "Provide a valid mobile number",
-        },
-    },
+
     refresh_token: {
         type: String,
         default: "",

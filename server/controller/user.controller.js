@@ -95,6 +95,8 @@ export async function verifyEmailController(request, response) {
             error: false
         })
     } catch (error) {
+        console.log(error)
+
         return response.status(500).json({
             message: error.message || error,
             error: true,
@@ -202,6 +204,8 @@ export async function loginController(request, response) {
         })
 
     } catch (error) {
+        console.log(error)
+
         return response.status(500).json({
             message: error.message || error,
             error: true,
@@ -234,6 +238,8 @@ export async function logoutController(request, response) {
             success: true
         })
     } catch (error) {
+        console.log(error)
+
         return response.status(500).json({
             message: error.message || error,
             error: true,
@@ -322,6 +328,8 @@ export async function forgotPasswordController(request, response) {
         })
 
     } catch (error) {
+        console.log(error)
+
         return response.status(500).json({
             message: error.message || error,
             error: true,
@@ -386,6 +394,8 @@ export async function verifyForgotPasswordOtp(request, response) {
         })
 
     } catch (error) {
+        console.log(error)
+
         return response.status(500).json({
             message: error.message || error,
             error: true,

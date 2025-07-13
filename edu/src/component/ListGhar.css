@@ -1,0 +1,281 @@
+.list-ghar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+.error-message {
+    background-color: #ffeeee;
+    color: #d32f2f;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #d32f2f;
+}
+
+.sort-options {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.sort-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-right: 1rem;
+}
+
+.sort-button {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    font-size: 0.85rem;
+    color: #555;
+    transition: all 0.2s ease;
+}
+
+.sort-button:hover {
+    background-color: #f5f5f5;
+}
+
+.sort-button.active {
+    background-color: #2c3e50;
+    color: white;
+    border-color: #2c3e50;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.property-card {
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: white;
+}
+
+.property-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.property-image-container {
+    height: 220px;
+    position: relative;
+    background-color: #f9f9f9;
+}
+
+.property-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.property-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 0.9rem;
+    background-color: #f0f0f0;
+}
+
+.property-status {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.sold {
+    background-color: #e53935;
+    color: white;
+}
+
+.status-badge.verified {
+    background-color: #43a047;
+    color: white;
+}
+
+.property-details {
+    padding: 1.5rem;
+}
+
+.property-header {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.property-location {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #222;
+    flex: 1;
+}
+
+.property-price {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-left: 1rem;
+    white-space: nowrap;
+}
+
+.property-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.meta-item {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.meta-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.meta-value {
+    color: #333;
+}
+
+.property-description {
+    margin: 1rem 0;
+    color: #444;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.property-specs {
+    margin: 1.5rem 0;
+}
+
+.specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+}
+
+.spec-item {
+    text-align: center;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.spec-value {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.spec-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.property-contact {
+    margin-top: 1.5rem;
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+}
+
+.contact-info {
+    margin-bottom: 0.75rem;
+}
+
+.contact-info.secondary {
+    margin-bottom: 0;
+}
+
+.contact-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.contact-number {
+    display: block;
+    color: #2c3e50;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.contact-number:hover {
+    color: #1a73e8;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .list-ghar-container {
+        padding: 1rem;
+    }
+
+    .property-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .property-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .property-price {
+        margin-left: 0;
+    }
+
+    .specs-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

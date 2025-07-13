@@ -1,0 +1,447 @@
+/* HostelController.css */
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #166088;
+    --accent-color: #4fc3f7;
+    --success-color: #2e7d32;
+    --error-color: #d32f2f;
+    --warning-color: #ed6c02;
+    --text-primary: #212121;
+    --text-secondary: #757575;
+    --bg-color: #f5f7fa;
+    --card-bg: #ffffff;
+    --border-color: #e0e0e0;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--bg-color);
+}
+
+/* Loading State */
+.loading-container {
+    position: relative;
+    top: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    gap: 1rem;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error State */
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 1.1rem;
+}
+
+.retry-button {
+    padding: 0.5rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.retry-button:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 1rem;
+    text-align: center;
+    padding: 2rem;
+}
+
+.empty-state-image {
+    width: 150px;
+    height: 150px;
+    opacity: 0.7;
+}
+
+.empty-state h3 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+}
+
+/* Hostel Grid */
+.hostel-grid {
+    position: relative;
+    top: 180px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    padding: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Hostel Card */
+.hostel-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.hostel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+}
+
+.hostel-image-container {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+}
+
+.hostel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.hostel-card:hover .hostel-image {
+    transform: scale(1.03);
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.status-badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge.sold {
+    background-color: var(--error-color);
+}
+
+.badge.verified {
+    background-color: var(--success-color);
+}
+
+/* Hostel Details */
+.hostel-details {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.hostel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.hostel-location {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-right: 1rem;
+}
+
+.hostel-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    white-space: nowrap;
+}
+
+.hostel-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.meta-label {
+    font-weight: 500;
+}
+
+.meta-value {
+    color: var(--text-primary);
+}
+
+.hostel-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Specifications */
+.hostel-specs {
+    margin-bottom: 1.5rem;
+}
+
+.specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.spec-item {
+    background-color: rgba(74, 111, 165, 0.05);
+    border-radius: 6px;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.spec-value {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.spec-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Contact Information */
+.hostel-contact-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    position: relative;
+}
+
+.hostel-contact {
+    flex: 1;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.contact-item.secondary {
+    color: var(--text-secondary);
+}
+
+.contact-label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.contact-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.contact-link:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* Menu Styles */
+.hostel-menu-container {
+    position: relative;
+    margin-left: 1rem;
+}
+
+.hostel-menu-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.hostel-menu-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.menu-dots {
+    display: inline-block;
+    font-size: 1.5rem;
+    line-height: 0.5;
+    color: var(--text-secondary);
+    transform: rotate(90deg);
+}
+
+.hostel-menu-dropdown {
+    position: absolute;
+    right: 0;
+    bottom: 100%;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    min-width: 160px;
+    z-index: 100;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.menu-item {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.menu-item.delete {
+    color: var(--error-color);
+}
+
+.menu-item.delete:hover {
+    background-color: rgba(211, 47, 47, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .hostel-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .hostel-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+
+    .hostel-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .hostel-price {
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .hostel-image-container {
+        height: 180px;
+    }
+
+    .hostel-details {
+        padding: 1.25rem;
+    }
+
+    .specs-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -1,0 +1,195 @@
+.searchbar-wrapper {
+    --primary-color: #3a86ff;
+    --primary-hover: #2667cc;
+    --text-color: #333;
+    --light-gray: #f5f5f5;
+    --border-color: #ddd;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --radius: 8px;
+    --transition: all 0.2s ease;
+    width: 100%;
+    max-width: 600px;
+    margin: 200px auto 0;
+    position: relative;
+    z-index: 100;
+}
+
+.searchbar-container {
+    position: relative;
+    width: 100%;
+}
+
+.searchbar-input-group {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+    position: relative;
+    z-index: 101;
+}
+
+.searchbar-input-group:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2);
+}
+
+.search-icon {
+    padding: 0 15px;
+    color: #999;
+    display: flex;
+    align-items: center;
+}
+
+.searchbar-input {
+    flex: 1;
+    padding: 14px 0;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--text-color);
+    background: transparent;
+}
+
+.searchbar-input::placeholder {
+    color: #aaa;
+}
+
+.clear-button {
+    background: none;
+    border: none;
+    padding: 0 10px;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.clear-button:hover {
+    color: #666;
+}
+
+.search-button {
+    padding: 0 20px;
+    height: 100%;
+    min-height: 48px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.search-button:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+}
+
+.search-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.searchbar-container {
+    position: relative;
+    /* This is crucial for absolute positioning context */
+    width: 100%;
+    display: inline-block;
+    /* Helps contain absolute children */
+}
+
+
+.item-icon {
+    margin-right: 12px;
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.item-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-empty {
+    padding: 20px;
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .searchbar-wrapper {
+        margin: 150px auto 0;
+        padding: 0 20px;
+    }
+
+    .searchbar-input-group {
+        flex-direction: row;
+    }
+
+    .searchbar-input {
+        padding: 14px 15px;
+    }
+
+    .search-button {
+        padding: 0 15px;
+    }
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background-color: #f8fafc;
+    color: #4f46e5;
+}
+
+.dropdown-item.active {
+    background-color: #eef2ff;
+    color: #4f46e5;
+    font-weight: 500;
+}
+
+.no-results {
+    padding: 12px 16px;
+    color: #64748b;
+    font-style: italic;
+    cursor: default;
+}
+
+/* Scrollbar styling for dropdown */
+.dropdown-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dropdown-list::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 0 8px 8px 0;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

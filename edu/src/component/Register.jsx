@@ -38,7 +38,6 @@ const Register = () => {
         setSuccess('User is registered successfully. Now you can verify it.');
         setFormData({ name: '', email: '', password: '' });
         setLoading(false);
-        navigate('/verify')
       } else {
         setError(response.data.message || 'Registration failed. Try again.');
         setLoading(false);

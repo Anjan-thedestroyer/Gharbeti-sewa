@@ -62,6 +62,7 @@ export async function registerUserController(request, response) {
         })
 
     } catch (error) {
+        console.log(error)
         return response.status(500).json({
             message: error.message || error,
             error: true,

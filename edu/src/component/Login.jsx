@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import './Login.css';
+import axiosInstance from '../utils/axios';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,8 +28,8 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/user/login',
+      const response = await axiosInstance.post(
+        '/user/login',
         formData,
         { withCredentials: true }
       );

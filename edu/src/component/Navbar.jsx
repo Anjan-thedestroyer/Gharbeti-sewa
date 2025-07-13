@@ -33,14 +33,21 @@ const Navbar = ({ color }) => {
     checkLoginStatus();
     const getData = async () => {
       try {
-        const response = await axiosInstance.get('/user/user-details')
-        if (response.data.data.hostel[0] !== null) {
-          setHostel(true)
+        const response = await axiosInstance.get('/user/user-details');
+        const hostelData = response.data?.data?.hostel;
+
+
+        if (Array.isArray(hostelData) && hostelData.length > 0 && hostelData[0] !== null) {
+          setHostel(true);
+        } else {
+          setHostel(false);
         }
       } catch (error) {
-
+        console.error("Failed to fetch user details:", error);
+        setHostel(false);
       }
-    }
+    };
+
     getData()
 
     // Listen for auth-change events

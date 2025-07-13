@@ -1,9 +1,10 @@
 // src/utils/axiosInstance.js
 import axios from 'axios';
 // https://gharbeti-sewa.onrender.com/api
+// 'http://localhost:8080/api'||
 // Create Axios instance
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: 'https://gharbeti-sewa.onrender.com/api',
     timeout: 10000,
     withCredentials: true,
     headers: {

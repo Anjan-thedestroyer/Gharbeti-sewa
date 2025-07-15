@@ -1,31 +1,42 @@
-import { Resend } from 'resend';
-import dotenv from 'dotenv'
-dotenv.config()
+import axios from 'axios';
+import dotenv from 'dotenv';
+dotenv.config();
 
-if(!process.env.RESEND_API){
-    console.log("Provide RESEND_API in side the .env file")
+if (!process.env.BREVO_API_KEY || !process.env.SENDER_EMAIL) {
+    console.log("Provide BREVO_API_KEY and SENDER_EMAIL in the .env file");
 }
 
-const resend = new Resend(process.env.RESEND_API);
-
-const sendEmail = async({sendTo, subject, html })=>{
+const sendEmail = async ({ sendTo, subject, html }) => {
     try {
-        const { data, error } = await resend.emails.send({
-            from: 'eduicity <onboarding@resend.dev>',
-            to: sendTo,
-            subject: subject,
-            html: html,
-        });
+        const response = await axios.post(
+            'https://api.brevo.com/v3/smtp/email',
+            {
+                sender: {
+                    name: 'Gharbeti-sewa',
+                    email: process.env.SENDER_EMAIL,
+                },
+                to: [
+                    {
+                        email: sendTo,
+                        name: sendTo.split('@')[0], // Optional name fallback
+                    },
+                ],
+                subject: subject,
+                htmlContent: html,
+            },
+            {
+                headers: {
+                    'api-key': process.env.BREVO_API_KEY,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
 
-        if (error) {
-            return console.error({ error });
-        }
-
-        return data
+        return response.data;
     } catch (error) {
-        console.log(error)
+        console.error("Brevo email error:", error.response?.data || error.message);
+        return null;
     }
-}
+};
 
-export default sendEmail
-
+export default sendEmail;

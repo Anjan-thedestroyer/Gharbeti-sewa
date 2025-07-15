@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import axiosInstance from '../utils/axios';
 import './PropertyDetail.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // const DataContext = createContext("landlord");
 // export const usedata = () => useContext(DataContext)
@@ -13,9 +13,15 @@ const PropertyDetail = ({ propertyId, onClose, type }) => {
     const [showFullImage, setShowFullImage] = useState(false);
     const [isHostel, setIsHostel] = useState(false)
     const navigate = useNavigate()
+    const { id } = useParams()
     const handleApply = async (_id) => {
-        await localStorage.setItem('myData', JSON.stringify({ data: 'Landlord' }));
-        navigate(`/apply/${_id}`)
+        if (id === 'hostel') {
+            await localStorage.setItem('myData', JSON.stringify({ data: 'Hostel' }));
+            navigate(`/apply/${_id}`)
+        } else {
+            await localStorage.setItem('myData', JSON.stringify({ data: 'Landlord' }));
+            navigate(`/apply/${_id}`)
+        }
     }
 
 
@@ -162,7 +168,7 @@ const PropertyDetail = ({ propertyId, onClose, type }) => {
 
                             <div className="property-meta">
                                 <div className="meta-item">
-                                    <span className="meta-label">Listed by:</span>
+                                    <span className="meta-label">Property name:</span>
                                     <span className="meta-value">{property.name || 'Owner'}</span>
                                 </div>
                                 <div className="meta-item">
@@ -183,6 +189,12 @@ const PropertyDetail = ({ propertyId, onClose, type }) => {
                                         <div className="spec-item">
                                             <span className="spec-value">{property.bathroom}</span>
                                             <span className="spec-label">Bathrooms</span>
+                                        </div>
+                                    )}
+                                    {property.Rooms && (
+                                        <div className="spec-item">
+                                            <span className="spec-value">{property.Rooms || property.room}</span>
+                                            <span className="spec-label">Rooms</span>
                                         </div>
                                     )}
                                     {area && (

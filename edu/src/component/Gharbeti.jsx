@@ -271,7 +271,6 @@ const Gharbeti = () => {
                             Monthly Rent (NPR) <span className="required">*</span>
                         </label>
                         <div className="price-input-container">
-                            <span className="currency">NPR</span>
                             <input
                                 type="number"
                                 id="pricing"

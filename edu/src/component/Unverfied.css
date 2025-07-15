@@ -1,94 +1,118 @@
-/* UnVerified.css */
-
 .unverified-container {
+    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.loading-text {
-    text-align: center;
-    font-size: 18px;
-    color: #666;
-    padding: 20px;
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
 }
 
-.error-message {
-    background-color: #ffebee;
-    color: #c62828;
-    padding: 15px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    border-left: 4px solid #c62828;
-}
-
-.unverified-header {
-    color: #2c3e50;
-    margin-bottom: 25px;
-    font-size: 28px;
-    font-weight: 600;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-}
-
-.landlords-list {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.landlord-card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.landlord-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.landlord-name {
-    font-size: 20px;
-    font-weight: 600;
-    color: #2c3e50;
+.spinner {
+    animation: spin 1s linear infinite;
+    font-size: 2rem;
     margin-bottom: 10px;
 }
 
-.landlord-detail {
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #555;
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error-message {
+    color: #d32f2f;
+    background-color: #fde8e8;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
-.landlord-detail svg {
-    margin-right: 8px;
-    color: #7f8c8d;
+.retry-btn {
+    padding: 5px 10px;
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-.no-landlords {
-    text-align: center;
-    color: #7f8c8d;
-    font-size: 16px;
-    padding: 30px;
-    background-color: #f9f9f9;
+.unverified-section {
+    margin-bottom: 40px;
+}
+
+.section-header {
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.entities-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.entity-card {
+    background-color: white;
     border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .landlords-list {
-        grid-template-columns: 1fr;
-    }
+.entity-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
 
-    .unverified-header {
-        font-size: 24px;
-    }
+.entity-detail {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.entity-detail svg {
+    margin-right: 8px;
+    color: #666;
+}
+
+.btn-container {
+    margin-top: 15px;
+}
+
+.verify-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.verify-btn:hover {
+    background-color: #388e3c;
+}
+
+.no-entities {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
 }

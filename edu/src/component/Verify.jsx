@@ -141,7 +141,7 @@ const Verify = () => {
                         </div>
                         <div className="alert-message">
                             {success ?
-                                'Application submitted successfully! Our team will contact you shortly.' :
+                                'Application verified.' :
                                 error}
                         </div>
                         <button

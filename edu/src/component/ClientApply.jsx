@@ -27,6 +27,8 @@ const ClientApply = () => {
         const stored = JSON.parse(localStorage.getItem("myData"));
         if (stored?.data) {
             setRole(stored.data);
+            console.log(role);
+
             if (role === stored.data) {
                 localStorage.removeItem('myData');
             }

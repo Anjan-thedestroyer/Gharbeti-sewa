@@ -11,6 +11,7 @@ const Navbar = ({ color }) => {
   const [isLogged, setIsLogged] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [hostel, setHostel] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,24 +36,26 @@ const Navbar = ({ color }) => {
       try {
         const response = await axiosInstance.get('/user/user-details');
         const hostelData = response.data?.data?.hostel;
-
-
+        const status = response.data?.data?.role
         if (Array.isArray(hostelData) && hostelData.length > 0 && hostelData[0] !== null) {
           setHostel(true);
         } else {
           setHostel(false);
         }
+        if (status === 'ADMIN') {
+          setIsAdmin(true)
+
+        } else {
+          setIsAdmin(false)
+        }
+
       } catch (error) {
         console.error("Failed to fetch user details:", error);
         setHostel(false);
       }
     };
-
     getData()
-
-    // Listen for auth-change events
     window.addEventListener('auth-change', checkLoginStatus);
-
     return () => {
       window.removeEventListener('auth-change', checkLoginStatus);
     };
@@ -116,6 +119,16 @@ const Navbar = ({ color }) => {
               About Us
             </Link>
           </li>
+          {isAdmin && (
+            <li
+              onClick={() => {
+                navigate('/unverified');
+                setMobileMenu(false);
+              }}
+            >
+              Verify
+            </li>
+          )}
 
           {isLogged ? (
             <li>

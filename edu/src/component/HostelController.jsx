@@ -17,6 +17,8 @@ const HostelController = () => {
                 setLoading(true);
                 const response = await axiosInstance.get('/user/get-hostel');
                 setHostels(response.data.data || []);
+                console.log(hostels);
+
             } catch (err) {
                 console.error('Error fetching hostels:', err);
                 setError("Failed to fetch hostel data. Please try again later.");
@@ -224,25 +226,15 @@ const HostelController = () => {
                                     <div className="contact-item">
                                         <span className="contact-label">Contact:</span>
                                         <a
-                                            href={`tel:${hostel.Contact_no1}`}
+                                            href={`tel:${hostel.contact_no
+                                                }`}
                                             className="contact-link"
                                             onClick={(e) => e.stopPropagation()}
                                         >
-                                            {hostel.Contact_no1 || 'Not provided'}
+                                            {hostel.contact_no || 'Not provided'}
                                         </a>
                                     </div>
-                                    {hostel.Contact_no2 && hostel.Contact_no2 !== hostel.Contact_no1 && (
-                                        <div className="contact-item secondary">
-                                            <span className="contact-label">Alt. contact:</span>
-                                            <a
-                                                href={`tel:${hostel.Contact_no2}`}
-                                                className="contact-link"
-                                                onClick={(e) => e.stopPropagation()}
-                                            >
-                                                {hostel.Contact_no2}
-                                            </a>
-                                        </div>
-                                    )}
+
                                 </div>
 
                                 <div className="hostel-menu-container">

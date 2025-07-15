@@ -1,84 +1,117 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axios';
-import { FaMapMarkerAlt, FaPhone, FaMoneyBillWave } from 'react-icons/fa';
-import './Unverfied.css'; // Make sure to create this CSS file
+import { FaMapMarkerAlt, FaPhone, FaMoneyBillWave, FaSpinner } from 'react-icons/fa';
+import './Unverfied.css';
 import { useNavigate } from 'react-router-dom';
 
 const UnVerified = () => {
-    const [data, setData] = useState([]);
+    const [landlords, setLandlords] = useState([]);
+    const [hostels, setHostels] = useState([]);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate()
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        getData();
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                await Promise.all([getLandlords(), getHostels()]);
+                setSuccess(true);
+            } catch (error) {
+                console.error(error);
+                setError(error.message || 'Failed to fetch data');
+                setSuccess(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, []);
 
-    const getData = async () => {
-        setLoading(true);
-        try {
-            const response = await axiosInstance.get('/landlords/');
-            console.log(response.data);
-            setData(response.data.data || []);
-            setSuccess(true);
-            setError(null);
-        } catch (error) {
-            console.error(error);
-            setError(error.message || 'Failed to fetch data');
-            setSuccess(false);
-        } finally {
-            setLoading(false);
-        }
+    const getLandlords = async () => {
+        const response = await axiosInstance.get('/landlords/');
+        setLandlords(response.data.data || []);
     };
-    const handleVerify = (id) => {
-        navigate(`/verify/${id}`)
-    }
+
+    const getHostels = async () => {
+        const response = await axiosInstance.get('/hostels/get-unhostel');
+        setHostels(response.data.data || []);
+    };
+
+    const handleVerify = (id, type) => {
+        navigate(`/verify/${id}`, { state: { type } });
+    };
+
+    const renderEntityCard = (entity, type) => {
+        return (
+            <li key={entity._id} className="entity-card">
+                <div className="entity-name">{entity.name || `Unnamed ${type}`}</div>
+                <div className="entity-detail">
+                    <FaMapMarkerAlt /> {entity.location || 'Location not specified'}
+                </div>
+                <div className="entity-detail">
+                    <FaMoneyBillWave /> {entity.pricing ? `Rs ${entity.pricing}` : 'Price not specified'}
+                </div>
+                <div className="entity-detail">
+                    <FaPhone /> {entity.Contact_no1 || 'Contact not provided'}
+                </div>
+                {entity.Contact_no2 && (
+                    <div className="entity-detail">
+                        <FaPhone /> {entity.Contact_no2}
+                    </div>
+                )}
+                <div className='btn-container'>
+                    <button
+                        onClick={() => handleVerify(entity._id, type)}
+                        className="verify-btn"
+                    >
+                        Verify
+                    </button>
+                </div>
+            </li>
+        );
+    };
 
     return (
         <div className="unverified-container">
-            {loading && <p className="loading-text">Loading...</p>}
-
-            {error && (
+            {loading ? (
+                <div className="loading-container">
+                    <FaSpinner className="spinner" />
+                    <p>Loading...</p>
+                </div>
+            ) : error ? (
                 <div className="error-message">
                     Error: {error}
-                </div>
-            )}
-
-            {success && data.length > 0 ? (
-                <div>
-                    <h2 className="unverified-header">Unverified Landlords</h2>
-                    <ul className="landlords-list">
-                        {data.map((landlord) => (
-                            <li key={landlord.id} className="landlord-card">
-                                <div className="landlord-name">{landlord.name || 'Unnamed Landlord'}</div>
-                                <div className="landlord-detail">
-                                    <FaMapMarkerAlt /> {landlord.location || 'Location not specified'}
-                                </div>
-                                <div className="landlord-detail">
-                                    <FaMoneyBillWave /> {landlord.pricing ? `Rs${landlord.pricing}` : 'Price not specified'}
-                                </div>
-                                <div className="landlord-detail">
-                                    <FaPhone /> {landlord.Contact_no1 || 'Contact not provided'}
-                                </div>
-
-                                {landlord.Contact_no2 && (
-                                    <div className="landlord-detail">
-                                        <FaPhone /> {landlord.Contact_no2}
-                                    </div>
-
-
-                                )}
-                                <div className='btn'>
-                                    <button onClick={() => handleVerify(landlord._id)}>Verify</button>
-                                </div>
-                            </li>
-
-                        ))}
-                    </ul>
+                    <button onClick={() => window.location.reload()} className="retry-btn">
+                        Retry
+                    </button>
                 </div>
             ) : (
-                !loading && <p className="no-landlords">No unverified landlords found.</p>
+                <>
+                    <section className="unverified-section">
+                        <h2 className="section-header">Unverified Landlords</h2>
+                        {landlords.length > 0 ? (
+                            <ul className="entities-list">
+                                {landlords.map(landlord => renderEntityCard(landlord, 'landlord'))}
+                            </ul>
+                        ) : (
+                            <p className="no-entities">No unverified landlords found.</p>
+                        )}
+                    </section>
+
+                    <section className="unverified-section">
+                        <h2 className="section-header">Unverified Hostels</h2>
+                        {hostels.length > 0 ? (
+                            <ul className="entities-list">
+                                {hostels.map(hostel => renderEntityCard(hostel, 'hostel'))}
+                            </ul>
+                        ) : (
+                            <p className="no-entities">No unverified hostels found.</p>
+                        )}
+                    </section>
+                </>
             )}
         </div>
     );

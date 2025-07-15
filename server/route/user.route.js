@@ -5,7 +5,7 @@ import auth from '../middleware/auth.js'
 const userRouter = Router()
 
 userRouter.post('/register', registerUserController)
-userRouter.post('/verify-email', verifyEmailController)
+userRouter.get('/verify-email/:code', verifyEmailController)
 userRouter.post('/login', loginController)
 userRouter.get('/logout', logoutController)
 userRouter.put('/update-user', auth, updateUserDetails)

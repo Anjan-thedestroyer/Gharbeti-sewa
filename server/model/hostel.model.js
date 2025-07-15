@@ -53,16 +53,20 @@ const HostelSchema = new mongoose.Schema({
     image: [{
         type: String
     }],
-    buyer: {
+    buyer: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'buyer'
+    }],
+    Applicants: {
+        type: Number,
+        default: 0
     },
     menus: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'menu'
     }
 
-})
+}, { timestamps: true })
 const HostelModel = mongoose.model("Hostel", HostelSchema);
 export default HostelModel
 HostelSchema.index({

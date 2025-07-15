@@ -47,7 +47,7 @@ export async function registerUserController(request, response) {
 
         const verifyEmail = await sendEmail({
             sendTo: email,
-            subject: "Verify email from binkeyit",
+            subject: "Verify email from Gharbeti-sewa",
             html: verifyEmailTemplate({
                 name,
                 url: VerifyEmailUrl
@@ -73,37 +73,47 @@ export async function registerUserController(request, response) {
 
 export async function verifyEmailController(request, response) {
     try {
-        const { code } = request.body
+        const { code } = request.params;
 
-        const user = await UserModel.findOne({ _id: code })
+        const user = await UserModel.findOne({ _id: code });
 
         if (!user) {
             return response.status(400).json({
-                message: "Invalid code",
+                message: "Invalid or expired verification code",
                 error: true,
                 success: false
-            })
+            });
         }
 
-        const updateUser = await UserModel.updateOne({ _id: code }, {
-            verify_email: true
-        })
+        if (user.verify_email) {
+            return response.json({
+                message: "Email is already verified",
+                success: true,
+                error: false
+            });
+        }
+
+        await UserModel.updateOne(
+            { _id: code },
+            { verify_email: true }
+        );
 
         return response.json({
-            message: "Verify email done",
+            message: "Email verified successfully",
             success: true,
             error: false
-        })
+        });
     } catch (error) {
-        console.log(error)
-
+        console.log(error);
         return response.status(500).json({
-            message: error.message || error,
+            message: error.message || "Internal server error",
             error: true,
-            success: true
-        })
+            success: false
+        });
     }
 }
+
+
 
 export async function getHostelsByuser(request, response) {
     try {
@@ -155,6 +165,13 @@ export async function loginController(request, response) {
         if (!user) {
             return response.status(400).json({
                 message: "User not register",
+                error: true,
+                success: false
+            })
+        }
+        if (user.verify_email === false) {
+            return response.status(400).json({
+                message: "email not verified",
                 error: true,
                 success: false
             })

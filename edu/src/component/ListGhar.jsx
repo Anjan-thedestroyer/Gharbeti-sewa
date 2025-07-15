@@ -158,12 +158,19 @@ const ListGhar = ({ data }) => {
 
                                         <div className="property-specs">
                                             <div className="specs-grid">
+                                                {land.room || land.Rooms !== 0 && (
+                                                    <div className="spec-item">
+                                                        <span className="spec-value">{land.room || land.Rooms}</span>
+                                                        <span className="spec-label">Room</span>
+                                                    </div>
+                                                )}
                                                 {land.bathroom && (
                                                     <div className="spec-item">
                                                         <span className="spec-value">{land.bathroom}</span>
                                                         <span className="spec-label">Bathrooms</span>
                                                     </div>
                                                 )}
+
                                                 {area && (
                                                     <div className="spec-item">
                                                         <span className="spec-value">{area} sq.ft.</span>
@@ -190,11 +197,11 @@ const ListGhar = ({ data }) => {
                                             <div className="contact-info">
                                                 <span className="contact-label">Primary contact:</span>
                                                 <a
-                                                    href={`tel:${land.Contact_no1}`}
+                                                    href={`tel:${land.contact_no}`}
                                                     className="contact-number"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
-                                                    {land.Contact_no1 || 'Not provided'}
+                                                    {land.Contact_no1 || land.contact_no || 'Not provided'}
                                                 </a>
                                             </div>
                                             {land.Contact_no2 && land.Contact_no2 !== land.Contact_no1 && (
@@ -206,6 +213,18 @@ const ListGhar = ({ data }) => {
                                                         onClick={(e) => e.stopPropagation()}
                                                     >
                                                         {land.Contact_no2}
+                                                    </a>
+                                                </div>
+                                            )}
+                                            {land.email !== 0 && (
+                                                <div className="contact-info secondary">
+                                                    <span className="contact-label">Secondary contacts:</span>
+                                                    <a
+                                                        href={`tel:${land.email}`}
+                                                        className="contact-number"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        {land.email}
                                                     </a>
                                                 </div>
                                             )}

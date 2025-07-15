@@ -59,7 +59,7 @@ const LandSchema = new mongoose.Schema(
         width: {
             type: Number,
         },
-        rooms: {
+        room: {
             type: Number,
             default: 0,
         },

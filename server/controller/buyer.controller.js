@@ -48,38 +48,54 @@ export async function AddBuyerLandlord(req, res) {
 
 export async function AddBuyerHostel(req, res) {
     try {
-        const { hostel } = req.params
-        const { name, phone, No_of_people, No_of_rooms, } = req.body;
+        const { id } = req.params;
+        const { name, phone, No_of_people, No_of_rooms } = req.body;
+
         if (!name || !phone || !No_of_people || !No_of_rooms) {
             return res.status(400).json({
                 message: "Please fill in all fields",
                 success: false,
-            })
+            });
         }
+
         const Buyer = await BuyerModel.create({
             name,
             phone,
             No_of_people,
             No_of_rooms,
-            hostel,
+            id,
+        });
 
-        })
-        const Hostel = await HostelModel.findByIdAndUpdate(hostel, {
-            $set: { buyer: Buyer._id }
-        })
+        const Hostel = await HostelModel.findByIdAndUpdate(
+            id,
+            {
+                $set: { Buyer: Buyer._id },
+                $inc: { Applicants: 1 },
+            },
+            { new: true }
+        );
+
+        if (!Hostel) {
+            return res.status(404).json({
+                message: "Hostel not found",
+                success: false,
+            });
+        }
 
         return res.status(201).json({
             message: "Buyer added successfully",
             success: true,
-            data: Buyer
-        })
+            data: Buyer,
+        });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             message: "Internal server error",
             success: false,
-        })
+        });
     }
 }
+
 export async function GetBuyersByHostel(req, res) {
     try {
         const { hostel } = req.params

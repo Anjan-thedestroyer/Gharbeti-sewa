@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Main from './MainWeb'
 import Gharbeti from './component/Gharbeti'
@@ -9,12 +9,15 @@ import Verify from './component/Verify'
 import Buyer from './Buyer'
 import ClientApply from './component/ClientApply'
 import HostelList from './component/HostelList'
-import HostelController from './component/HostelController'
 import MyWorks from './MyWorks'
 import EditDetails from './component/EditDetails'
 import EditImage from './component/EditImage'
+import VerifyEmail from './component/Verify_user'
 
 const App = () => {
+
+
+
   return (
     <Router>
       <Routes>
@@ -30,6 +33,8 @@ const App = () => {
         <Route path='/control-hostel' element={<MyWorks />} />
         <Route path='/edit-details/:id' element={<EditDetails />} />
         <Route path='/edit-image/:id' element={<EditImage />} />
+        <Route path='/verify-email' element={<VerifyEmail />} />
+
       </Routes>
     </Router>
   )

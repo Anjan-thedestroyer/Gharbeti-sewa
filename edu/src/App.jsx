@@ -13,6 +13,7 @@ import MyWorks from './MyWorks'
 import EditDetails from './component/EditDetails'
 import EditImage from './component/EditImage'
 import VerifyEmail from './component/Verify_user'
+import AllBuyer from './component/AllBuyer'
 
 const App = () => {
 
@@ -34,6 +35,7 @@ const App = () => {
         <Route path='/edit-details/:id' element={<EditDetails />} />
         <Route path='/edit-image/:id' element={<EditImage />} />
         <Route path='/verify-email' element={<VerifyEmail />} />
+        <Route path='/list-buyer' element={<AllBuyer />} />
 
       </Routes>
     </Router>

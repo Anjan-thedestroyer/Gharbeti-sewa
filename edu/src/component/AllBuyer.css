@@ -1,0 +1,436 @@
+/* AllBuyers.css */
+
+/* Color Variables */
+:root {
+    --all-buyers-primary: #3a86ff;
+    --all-buyers-primary-dark: #2667cc;
+    --all-buyers-secondary: #8338ec;
+    --all-buyers-success: #06d6a0;
+    --all-buyers-danger: #ef476f;
+    --all-buyers-warning: #ffd166;
+    --all-buyers-light: #f8f9fa;
+    --all-buyers-dark: #212529;
+    --all-buyers-gray-600: #6c757d;
+    --all-buyers-gray-500: #adb5bd;
+    --all-buyers-gray-400: #ced4da;
+    --all-buyers-gray-300: #dee2e6;
+    --all-buyers-gray-200: #e9ecef;
+    --all-buyers-gray-100: #f8f9fa;
+}
+
+/* Base Styles */
+.all-buyers-container * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.all-buyers-body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: var(--all-buyers-dark);
+    background-color: #f5f7fa;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Loading State */
+.all-buyers-loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.all-buyers-loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(58, 134, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--all-buyers-primary);
+    animation: all-buyers-spin 1s linear infinite;
+}
+
+@keyframes all-buyers-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error and Empty States */
+.all-buyers-error-message,
+.all-buyers-empty-state {
+    text-align: center;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.all-buyers-error-message {
+    color: var(--all-buyers-danger);
+    border-left: 4px solid var(--all-buyers-danger);
+    background-color: rgba(239, 71, 111, 0.05);
+}
+
+.all-buyers-empty-state {
+    color: var(--all-buyers-gray-600);
+    border-left: 4px solid var(--all-buyers-gray-400);
+}
+
+/* Dashboard Layout */
+.all-buyers-dashboard {
+    padding: 2rem 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.all-buyers-dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.all-buyers-dashboard-header h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--all-buyers-dark);
+    margin-bottom: 0.5rem;
+}
+
+.all-buyers-subtitle {
+    color: var(--all-buyers-gray-600);
+    font-size: 0.875rem;
+}
+
+/* Buyers Grid */
+.all-buyers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Buyer Card */
+.all-buyers-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border: 1px solid var(--all-buyers-gray-200);
+}
+
+.all-buyers-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-color: var(--all-buyers-gray-300);
+}
+
+.all-buyers-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--all-buyers-gray-200);
+    background-color: white;
+}
+
+.all-buyers-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.all-buyers-title h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: var(--all-buyers-dark);
+}
+
+.all-buyers-timestamp {
+    font-size: 0.75rem;
+    color: var(--all-buyers-gray-600);
+}
+
+.all-buyers-content {
+    padding: 1.25rem;
+}
+
+/* Detail Sections */
+.all-buyers-detail-section {
+    margin-bottom: 1.5rem;
+}
+
+.all-buyers-detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.all-buyers-section-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--all-buyers-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+/* Information Rows */
+.all-buyers-info-row {
+    display: flex;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.all-buyers-info-row:last-child {
+    margin-bottom: 0;
+}
+
+.all-buyers-info-label {
+    font-weight: 500;
+    color: var(--all-buyers-gray-600);
+    min-width: 120px;
+    margin-right: 0.5rem;
+}
+
+/* Requirements Grid */
+.all-buyers-requirements-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.all-buyers-requirement-item {
+    background: var(--all-buyers-gray-100);
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.all-buyers-requirement-item .all-buyers-info-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    min-width: auto;
+    color: var(--all-buyers-gray-600);
+    font-size: 0.75rem;
+}
+
+.all-buyers-requirement-item .all-buyers-info-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--all-buyers-primary);
+}
+
+/* Property Details */
+.all-buyers-property-details {
+    background: var(--all-buyers-gray-100);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+.all-buyers-property-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.all-buyers-property-header h4 {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--all-buyers-dark);
+}
+
+.all-buyers-verified-badge {
+    background: var(--all-buyers-success);
+    color: white;
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.all-buyers-property-grid {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    gap: 1rem;
+}
+
+.all-buyers-property-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.all-buyers-property-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--all-buyers-gray-200);
+}
+
+.all-buyers-property-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.all-buyers-property-description {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--all-buyers-gray-300);
+}
+
+/* Action Menu */
+.all-buyers-actions {
+    position: relative;
+}
+
+.all-buyers-action-button {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.all-buyers-action-button:hover {
+    background-color: var(--all-buyers-gray-100);
+}
+
+.all-buyers-action-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid var(--all-buyers-gray-200);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-width: 180px;
+    overflow: hidden;
+}
+
+.all-buyers-action-menu button {
+    display: block;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--all-buyers-dark);
+    transition: background-color 0.15s ease;
+}
+
+.all-buyers-action-menu button:hover {
+    background-color: var(--all-buyers-gray-100);
+    color: var(--all-buyers-primary-dark);
+}
+
+.all-buyers-action-menu button:first-child {
+    border-bottom: 1px solid var(--all-buyers-gray-200);
+}
+
+/* Back button */
+.all-buyers-back-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #3a86ff;
+    padding: 0.5rem;
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.all-buyers-back-button:hover {
+    background-color: rgba(58, 134, 255, 0.1);
+}
+
+.all-buyers-header-content {
+    flex: 1;
+}
+
+/* Property image improvements */
+.all-buyers-property-image-container {
+    width: 100px;
+    height: 100px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #e1e1e1;
+    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.all-buyers-property-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.all-buyers-property-image:hover {
+    transform: scale(1.05);
+}
+
+/* Load more button */
+.all-buyers-load-more-container {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.all-buyers-load-more-button {
+    padding: 0.75rem 1.5rem;
+    background-color: #3a86ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.all-buyers-load-more-button:hover {
+    background-color: #2667cc;
+    transform: translateY(-1px);
+}
+
+.all-buyers-load-more-button:active {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .all-buyers-property-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .all-buyers-property-image-container {
+        width: 100%;
+        height: 150px;
+        margin-top: 1rem;
+    }
+
+    .all-buyers-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

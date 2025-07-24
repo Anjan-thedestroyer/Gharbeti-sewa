@@ -5,12 +5,11 @@ dotenv.config();
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
-import connectDB from './config/connectDB.js';
 import BuyerRoute from './route/buyer.route.js';
 import HostelRoute from './route/hostel.route.js';
 import landlordRouter from './route/landlord.route.js';
 import userRouter from './route/user.route.js';
-
+import { connectDB, connectDB2 } from './config/connectDB.js'
 const app = express();
 
 // Middleware
@@ -50,3 +49,4 @@ connectDB().then(() => {
     console.error("Database connection failed", err);
     process.exit(1);
 });
+connectDB2()

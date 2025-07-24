@@ -1,7 +1,8 @@
+import { connectDB2 } from "../config/connectDB.js";
 import BuyerModel from "../model/buyer.model.js";
 import HostelModel from "../model/hostel.model.js";
 import LandModel from "../model/landlord.model.js";
-
+import { BuyerSchema } from "../model/buyer.model.js";
 export async function AddBuyerLandlord(req, res) {
     try {
         const { id } = req.params;
@@ -63,13 +64,13 @@ export async function AddBuyerHostel(req, res) {
             phone,
             No_of_people,
             No_of_rooms,
-            id,
+            hostel: id,
         });
 
         const Hostel = await HostelModel.findByIdAndUpdate(
             id,
             {
-                $set: { Buyer: Buyer._id },
+                $push: { buyer: Buyer._id },  // ✅ Add to array instead of overwriting
                 $inc: { Applicants: 1 },
             },
             { new: true }
@@ -95,6 +96,7 @@ export async function AddBuyerHostel(req, res) {
         });
     }
 }
+
 
 export async function GetBuyersByHostel(req, res) {
     try {
@@ -130,11 +132,103 @@ export async function GetBuyersByLand(req, res) {
         return res.status(200).json({
             message: "Buyers found successfully",
             success: true,
+
         })
     } catch (error) {
         return res.status(500).json({
             message: "Internal server error",
             success: false,
         })
+    }
+}
+export async function GetBuyers(req, res) {
+    try {
+        const Buyer = await BuyerModel.find().populate('hostel').populate('rent_room')
+        return res.status(200).json({
+            message: "Buyers found successfully",
+            success: true,
+            data: Buyer
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false,
+        })
+    }
+}
+export async function MarkAsComplete(req, res) {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({
+                message: "Invalid request",
+                success: false,
+                error: true
+            });
+        }
+
+        const buyer = await BuyerModel.findByIdAndUpdate(id, {
+            complete: true
+        }, { new: true });
+
+        if (!buyer) {
+            return res.status(404).json({
+                message: "No buyer found",
+                success: false,
+                error: true
+            });
+        }
+
+        const secondConn = await connectDB2();
+        const Buyer2Model = secondConn.model('Buyer', BuyerSchema);
+
+        const newBuyer = new Buyer2Model(buyer.toObject());
+        await newBuyer.save();
+
+        await BuyerModel.findByIdAndDelete(id);
+
+        await secondConn.close();
+
+        return res.status(200).json({
+            message: "Buyer moved to archive (DB2) and deleted from main DB",
+            success: true,
+            error: false
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: error.message || "Internal server error",
+            success: false,
+            error: true
+        });
+    }
+}
+export async function deleteBuyer(req, res) {
+    try {
+        const { id } = req.params
+        if (!id) {
+            return res.status(400).json({
+                message: "Invalid request",
+                success: false,
+                error: true
+            })
+        }
+        const Buyer = await BuyerModel.findByIdAndDelete(id)
+        return res.status(200).json({
+            message: "Buyer deleted",
+            success: true,
+            error: false,
+            data: Buyer
+        })
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: error.message || "Internal server error",
+            success: false,
+            error: true
+        });
     }
 }

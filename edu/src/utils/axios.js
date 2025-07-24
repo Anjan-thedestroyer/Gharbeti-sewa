@@ -4,7 +4,7 @@ import axios from 'axios';
 // 'http://localhost:8080/api'||
 // Create Axios instance
 const axiosInstance = axios.create({
-    baseURL: 'https://gharbeti-sewa.onrender.com/api',
+    baseURL: 'http://localhost:8080/api',
     timeout: 10000,
     withCredentials: true,
     headers: {
@@ -32,8 +32,8 @@ axiosInstance.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshResponse = await axios.post(
-                    'https://gharbeti-sewa.onrender.com/api/api/user/refresh-token',
-                    {}, // empty body
+                    'http://localhost:8080/api/user/refresh-token',
+                    {},
                     {
                         withCredentials: true,
                         headers: {
@@ -44,15 +44,15 @@ axiosInstance.interceptors.response.use(
 
 
                 const newAccessToken = refreshResponse.data?.data?.accessToken;
+                console.log(newAccessToken)
 
-                localStorage.setItem('token', newAccessToken);
+                localStorage.setItem('accessToken', newAccessToken);
 
                 axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
-                console.error('Refresh failed:', refreshError);
                 return Promise.reject(refreshError);
             }
         }

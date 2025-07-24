@@ -8,6 +8,7 @@ import generatedOtp from '../utils/generatedOtp.js'
 import forgotPasswordTemplate from '../utils/forgotPasswordTemplate.js'
 import jwt from 'jsonwebtoken'
 import HostelModel from '../model/hostel.model.js'
+import mongoose from 'mongoose'
 
 export async function registerUserController(request, response) {
     try {
@@ -125,7 +126,7 @@ export async function getHostelsByuser(request, response) {
                 success: false
             });
         }
-        const hostels = await HostelModel.find({ userId: userId }).populate('userId');
+        const hostels = await HostelModel.find({ userId: userId }).populate('userId').populate('buyer');
 
         return response.status(200).json({
             message: 'Hostels retrieved',
@@ -496,7 +497,7 @@ export async function refreshToken(request, response) {
             })
         }
 
-        const userId = verifyToken?._id
+        const userId = verifyToken?.id
 
         const newAccessToken = await generatedAccessToken(userId)
 
@@ -530,25 +531,39 @@ export async function refreshToken(request, response) {
 //get login user details
 export async function userDetails(request, response) {
     try {
-        const userId = request.userId
+        const userId = request.userId;
 
+        if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+            return response.status(400).json({
+                message: 'Invalid or missing user ID',
+                error: true,
+                success: false,
+            });
+        }
 
-        const user = await UserModel.findById(userId).select('-password -refresh_token')
+        const user = await UserModel.findById(userId).select('-password -refresh_token');
+
+        if (!user) {
+            return response.status(404).json({
+                message: 'User not found',
+                error: true,
+                success: false,
+            });
+        }
 
         return response.json({
-            message: 'user details',
+            message: 'User details',
             data: user,
             error: false,
             success: true
-        })
+        });
     } catch (error) {
-        console.log(error);
-
+        console.log(error)
         return response.status(500).json({
             message: error.message || error,
             error: true,
             success: false
-        })
+        });
     }
 }
 export async function listHostelbyUser(request, response) {

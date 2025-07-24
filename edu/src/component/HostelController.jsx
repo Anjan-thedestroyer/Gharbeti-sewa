@@ -10,6 +10,7 @@ const HostelController = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [menuOpen, setMenuOpen] = useState(null);
+    const [expandedBuyer, setExpandedBuyer] = useState(null);
 
     useEffect(() => {
         const fetchHostelData = async () => {
@@ -17,8 +18,7 @@ const HostelController = () => {
                 setLoading(true);
                 const response = await axiosInstance.get('/user/get-hostel');
                 setHostels(response.data.data || []);
-                console.log(hostels);
-
+                console.log(response.data.data);
             } catch (err) {
                 console.error('Error fetching hostels:', err);
                 setError("Failed to fetch hostel data. Please try again later.");
@@ -39,7 +39,7 @@ const HostelController = () => {
     };
 
     const handlePropertyClick = (id, e) => {
-        if (e.target.closest('.hostel-menu')) return;
+        if (e.target.closest('.hostel-menu') || e.target.closest('.buyer-section')) return;
         console.log("Hostel selected:", id);
     };
 
@@ -64,28 +64,25 @@ const HostelController = () => {
         closeMenu();
     }
 
-
-
     const handleEdit = async (id) => {
         try {
             await navigate(`/edit-details/${id}`)
-
         } catch (error) {
             console.error('Error navigating to edit page:', error);
         }
     };
 
     const handleEditImage = async (id) => {
-
         try {
             await navigate(`/edit-image/${id}`)
-
         } catch (err) {
-            console.error('Error navigating to edit page:', error);
-
+            console.error('Error navigating to edit page:', err);
         }
-
         closeMenu();
+    };
+
+    const toggleBuyerDetails = (hostelId) => {
+        setExpandedBuyer(expandedBuyer === hostelId ? null : hostelId);
     };
 
     useEffect(() => {
@@ -146,7 +143,7 @@ const HostelController = () => {
                         <div className="hostel-image-container">
                             {hostel.image?.length > 0 ? (
                                 <img
-                                    src={hostel.image[0]}
+                                    src={hostel.image[0]?.replace('http://', 'https://')}
                                     alt={`Hostel in ${hostel.location}`}
                                     className="hostel-image"
                                     onError={(e) => {
@@ -192,10 +189,10 @@ const HostelController = () => {
 
                             <div className="hostel-specs">
                                 <div className="specs-grid">
-                                    {hostel.bathroom && (
+                                    {hostel.Rooms && (
                                         <div className="spec-item">
-                                            <span className="spec-value">{hostel.bathroom}</span>
-                                            <span className="spec-label">Bathrooms</span>
+                                            <span className="spec-value">{hostel.Rooms}</span>
+                                            <span className="spec-label">Rooms</span>
                                         </div>
                                     )}
                                     {area && (
@@ -221,20 +218,50 @@ const HostelController = () => {
                                 </div>
                             </div>
 
+                            {hostel.buyer && hostel.buyer.length > 0 && (
+                                <div className="buyer-section">
+                                    <button
+                                        className="buyer-toggle"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleBuyerDetails(hostel._id);
+                                        }}
+                                    >
+                                        {expandedBuyer === hostel._id ? 'Hide Applicants' : `Show Applicants (${hostel.buyer.length})`}
+                                    </button>
+
+                                    {expandedBuyer === hostel._id && (
+                                        <div className="buyer-details-container">
+                                            {hostel.buyer.map((buyer, index) => (
+                                                <div className="buyer-card" key={index}>
+                                                    <div className="buyer-info">
+                                                        <h4>{buyer.name}</h4>
+                                                        <p><strong>Phone:</strong> {buyer.phone}</p>
+                                                        <p><strong>No. of People:</strong> {buyer.No_of_people}</p>
+                                                        <p><strong>No. of Rooms:</strong> {buyer.No_of_rooms}</p>
+                                                        <p><strong>Status:</strong> {buyer.completed ? 'Completed' : 'Pending'}</p>
+                                                        <p><strong>Applied on:</strong> {formatDate(buyer.createdAt)}</p>
+                                                    </div>
+
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             <div className="hostel-contact-container">
                                 <div className="hostel-contact">
                                     <div className="contact-item">
                                         <span className="contact-label">Contact:</span>
                                         <a
-                                            href={`tel:${hostel.contact_no
-                                                }`}
+                                            href={`tel:${hostel.contact_no}`}
                                             className="contact-link"
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             {hostel.contact_no || 'Not provided'}
                                         </a>
                                     </div>
-
                                 </div>
 
                                 <div className="hostel-menu-container">
@@ -261,7 +288,7 @@ const HostelController = () => {
                                                 Edit Images
                                             </button>
                                             <button
-                                                className="menu-item "
+                                                className="menu-item"
                                                 onClick={() => handleDelete(hostel._id)}
                                             >
                                                 Add food menu

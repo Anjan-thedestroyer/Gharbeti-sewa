@@ -4,9 +4,13 @@ import Searchbar from './component/Searchbar'
 import { useState } from 'react'
 import './Buyer.css'
 import ListGhar from './component/ListGhar'
+import { useEffect } from 'react'
 
 const Buyer = () => {
     const [selectedAddress, setSelectedAddress] = useState("")
+    useEffect(() => {
+        document.title = "Find Hostel or Rent - Buyer";
+    }, []);
 
     return (
         <div className='main'>

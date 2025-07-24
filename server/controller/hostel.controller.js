@@ -156,7 +156,7 @@ export async function updateHostel(req, res) {
             width, room, bathroom
         } = req.body;
 
-        const oldImages = req.body.oldImages || []; // from existing previews in frontend
+        const oldImages = req.body.oldImages || [];
         const images = req.files || []; // newly uploaded files
 
         if (!id) {
@@ -272,21 +272,17 @@ export async function getHostelByAddress(req, res) {
         if (!location.trim()) {
             return res.status(400).json({ message: "Location is required" });
         }
-        const hostel = await HostelModel.find({
+        const hostels = await HostelModel.find({
             verified: true,
             $text: { $search: location },
-
-        },
-            {
-                score: { $meta: "textScore" },
-            }).
-            populate('userId').
-            populate('buyer')
-
+        })
+            .select({ score: { $meta: "textScore" } })
+            .populate('userId')
+            .populate('buyer');
         return res.status(200).json({
             message: "Hostels found successfully.",
             success: true,
-            data: hostel
+            data: hostels
 
         })
     } catch (error) {

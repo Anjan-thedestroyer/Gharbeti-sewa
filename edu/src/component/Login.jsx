@@ -35,7 +35,7 @@ const Login = () => {
       );
 
       if (response.data.success) {
-        localStorage.setItem('accesstoken', response.data.data.accesstoken);
+        localStorage.setItem('accessToken', response.data.data.accesstoken);
         localStorage.setItem('refreshToken', response.data.data.refreshToken);
         navigate('/');
       } else {

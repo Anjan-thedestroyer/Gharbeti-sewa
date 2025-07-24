@@ -20,14 +20,14 @@ const Navbar = ({ color }) => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // call immediately
+    handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [color]);
 
   useEffect(() => {
     const checkLoginStatus = () => {
-      const token = localStorage.getItem('accesstoken') && localStorage.getItem('refreshToken')
+      const token = localStorage.getItem('accessToken')
       setIsLogged(!!token);
     };
 
@@ -68,7 +68,7 @@ const Navbar = ({ color }) => {
   const removeToken = async () => {
     try {
       await axiosInstance.get('/user/logout');
-      localStorage.removeItem('accesstoken');
+      localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('myData')
       window.location.href = '/'

@@ -1,7 +1,11 @@
 import mongoose from 'mongoose'
 
-const BuyerSchema = new mongoose.Schema({
+export const BuyerSchema = new mongoose.Schema({
     name: {
+        type: String,
+        required: true
+    },
+    email: {
         type: String,
         required: true
     },
@@ -27,10 +31,13 @@ const BuyerSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Land',
     },
-
-
+    completed: {
+        type: Boolean,
+        default: false
+    }
 },
     { timestamps: true })
+
 const BuyerModel = mongoose.model('buyer', BuyerSchema)
 
 export default BuyerModel;

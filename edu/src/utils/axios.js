@@ -4,7 +4,7 @@ import axios from 'axios';
 // 'http://localhost:8080/api'||
 // Create Axios instance
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: 'https://gharbeti-sewa.onrender.com/api',
     timeout: 10000,
     withCredentials: true,
     headers: {
@@ -32,7 +32,7 @@ axiosInstance.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshResponse = await axios.post(
-                    'http://localhost:8080/api/user/refresh-token',
+                    'https://gharbeti-sewa.onrender.com/api/user/refresh-token',
                     {},
                     {
                         withCredentials: true,

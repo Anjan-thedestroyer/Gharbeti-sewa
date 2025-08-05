@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import axiosInstance from '../utils/axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -14,23 +15,48 @@ const Verify = () => {
     const navigate = useNavigate();
     const [success, setSuccess] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
-
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [previews, setPreviews] = useState([]);
+    const [isFreelance, setIsFreelance] = useState(false)
     const { id } = useParams();
 
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Property Verification | Gharbeti",
+        "description": "Verify property details for listing approval on Gharbeti platform",
+        "potentialAction": {
+            "@type": "VerifyAction",
+            "target": `${window.location.origin}/verify/${id}`,
+            "result": {
+                "@type": "ReviewAction",
+                "resultReview": {
+                    "@type": "Review",
+                    "reviewBody": "Property verification process"
+                }
+            }
+        }
+    };
+    const { taskId } = useParams()
+    useEffect(() => {
+
+        if (taskId !== undefined) {
+            setIsFreelance(true)
+        } else {
+            setIsFreelance(false)
+        }
+
+    }, [])
     const handleImageChange = useCallback((event) => {
         const files = Array.from(event.target.files);
         if (!files.length) return;
 
-        // Check total image won't exceed 5
         if (files.length + data.image.length > 5) {
-            setError("Maximum 5 image allowed");
+            setError("Maximum 5 images allowed");
             return;
         }
 
-        // Create previews for all selected image
         const newPreviews = files.map(file => ({
             id: URL.createObjectURL(file),
             url: URL.createObjectURL(file),
@@ -86,12 +112,12 @@ const Verify = () => {
         const validationError = validateForm();
         if (validationError) {
             setError(validationError);
+            setShowAlert(true);
             setIsSubmitting(false);
             return;
         }
 
         try {
-            console.log(data)
             const formData = new FormData();
             formData.append('length', data.length);
             formData.append('width', data.width);
@@ -101,14 +127,14 @@ const Verify = () => {
             data.image.forEach((image) => {
                 formData.append('image', image);
             });
+            const url = isFreelance ? `/freelance/complete/${id}/${taskId}` : `/landlords/verify/${id}`
 
-
-            await axiosInstance.put(`/landlords/verify/${id}`, formData, {
+            await axiosInstance.put(url, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-
             setSuccess(true);
+            setShowAlert(true);
             setData({
                 length: "",
                 width: "",
@@ -117,201 +143,210 @@ const Verify = () => {
                 description: "",
                 image: []
             });
-
             setPreviews([]);
-
         } catch (error) {
             setError(error.response?.data?.message || "Verification failed. Please try again.");
+            setShowAlert(true);
         } finally {
             setIsSubmitting(false);
         }
     };
-    if (success) {
-        setTimeout(() => navigate('/'), 3000);
 
-    }
+    const closeAlert = () => {
+        setShowAlert(false);
+        if (success) {
+            navigate('/');
+        }
+    };
 
     return (
-        <div className="gharbeti-container">
-            {showAlert && (
-                <div className="alert-overlay">
-                    <div className="alert-container">
-                        <div className={`alert-icon ${success ? 'success' : 'error'}`}>
-                            {success ? '✓' : '!'}
+        <>
+            <Helmet>
+                <title>Verify Property | Gharbeti</title>
+                <meta name="description" content="Complete property verification process to approve listings on Gharbeti platform" />
+                <meta property="og:title" content="Verify Property | Gharbeti" />
+                <meta property="og:description" content="Review and verify property details for listing approval" />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={window.location.href} />
+                <link rel="canonical" href={`${window.location.origin}/verify/${id}`} />
+                <script type="application/ld+json">
+                    {JSON.stringify(structuredData)}
+                </script>
+            </Helmet>
+
+            <div className="gharbeti-container">
+                {showAlert && (
+                    <div className="alert-overlay">
+                        <div className="alert-container">
+                            <div className={`alert-icon ${success ? 'success' : 'error'}`}>
+                                {success ? '✓' : '!'}
+                            </div>
+                            <div className="alert-message">
+                                {success ? 'Property verified successfully!' : error}
+                            </div>
+                            <button
+                                className="alert-button"
+                                onClick={closeAlert}
+                            >
+                                OK
+                            </button>
                         </div>
-                        <div className="alert-message">
-                            {success ?
-                                'Application verified.' :
-                                error}
+                    </div>
+                )}
+
+                <div className="form-wrapper">
+                    <div className="form-header">
+                        <h1 className="form-title">Gharbeti</h1>
+                        <p className="form-subtitle">Verify a new rental property</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="form" encType="multipart/form-data">
+                        {/* Keep all existing form fields exactly the same */}
+                        <div className="form-group">
+                            <label htmlFor="length" className="form-label">
+                                Length (meters) <span>*</span>
+                            </label>
+                            <input
+                                type="number"
+                                id="length"
+                                name="length"
+                                value={data.length}
+                                onChange={handleInputChange}
+                                className="form-input"
+                                placeholder="Enter length in meters"
+                                required
+                                min="0"
+                                step="0.1"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="width" className="form-label">
+                                Width (meters) <span>*</span>
+                            </label>
+                            <input
+                                type="number"
+                                id="width"
+                                name="width"
+                                value={data.width}
+                                onChange={handleInputChange}
+                                className="form-input"
+                                placeholder="Enter width in meters"
+                                required
+                                min="0"
+                                step="0.1"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="room" className="form-label">
+                                Number of Rooms <span>*</span>
+                            </label>
+                            <input
+                                type="number"
+                                id="room"
+                                name="room"
+                                value={data.room}
+                                onChange={handleInputChange}
+                                className="form-input"
+                                placeholder="Enter number of rooms"
+                                required
+                                min="1"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="bathroom" className="form-label">
+                                Number of Bathrooms <span>*</span>
+                            </label>
+                            <input
+                                type="number"
+                                id="bathroom"
+                                name="bathroom"
+                                value={data.bathroom}
+                                onChange={handleInputChange}
+                                className="form-input"
+                                placeholder="Enter number of bathrooms"
+                                required
+                                min="1"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="description" className="form-label">
+                                Property Description <span>*</span>
+                            </label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={data.description}
+                                onChange={handleInputChange}
+                                className="form-input"
+                                placeholder="Describe your property in detail"
+                                required
+                                rows="4"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">
+                                Property Photos <span>*</span>
+                            </label>
+                            <label className="upload-box">
+                                <input
+                                    type="file"
+                                    onChange={handleImageChange}
+                                    multiple
+                                    accept="image/*"
+                                    className="file-input"
+                                />
+                                {previews.length === 0 ? (
+                                    <div className="upload-content">
+                                        <svg className="upload-icon" viewBox="0 0 24 24">
+                                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                                        </svg>
+                                        <p>Click to upload photos</p>
+                                        <small>JPG or PNG (max 5 MB each)</small>
+                                    </div>
+                                ) : (
+                                    <div className="preview-grid">
+                                        {previews.map((preview) => (
+                                            <div key={preview.id} className="thumb">
+                                                <img src={preview.url} height={"50px"} alt="preview" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeImage(preview.id)}
+                                                    className="remove-btn"
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </label>
+                            <div className="image-counter">
+                                {previews.length > 0
+                                    ? `${previews.length} / 5 photos selected`
+                                    : 'No photos selected'}
+                            </div>
                         </div>
                         <button
-                            className="alert-button"
-                            onClick={closeAlert}
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
                         >
-                            OK
+                            {isSubmitting ? (
+                                <>
+                                    <span className="spinner"></span>
+                                    Verifying...
+                                </>
+                            ) : 'Verify Property'}
                         </button>
-                    </div>
+                    </form>
                 </div>
-            )}
-            <div className="form-wrapper">
-                <div className="form-header">
-                    <h1 className="form-title">Gharbeti</h1>
-                    <p className="form-subtitle">Verify a new rental property</p>
-                </div>
-
-
-
-                <form onSubmit={handleSubmit} className="form" encType="multipart/form-data">
-                    <div className="form-group">
-                        <label htmlFor="length" className="form-label">
-                            Length (meters) <span>*</span>
-                        </label>
-                        <input
-                            type="number"
-                            id="length"
-                            name="length"
-                            value={data.length}
-                            onChange={handleInputChange}
-                            className="form-input"
-                            placeholder="Enter length in meters"
-                            required
-                            min="0"
-                            step="0.1"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="width" className="form-label">
-                            Width (meters) <span>*</span>
-                        </label>
-                        <input
-                            type="number"
-                            id="width"
-                            name="width"
-                            value={data.width}
-                            onChange={handleInputChange}
-                            className="form-input"
-                            placeholder="Enter width in meters"
-                            required
-                            min="0"
-                            step="0.1"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="room" className="form-label">
-                            Number of Rooms <span>*</span>
-                        </label>
-                        <input
-                            type="number"
-                            id="room"
-                            name="room"
-                            value={data.room}
-                            onChange={handleInputChange}
-                            className="form-input"
-                            placeholder="Enter number of rooms"
-                            required
-                            min="1"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="bathroom" className="form-label">
-                            Number of Bathrooms <span>*</span>
-                        </label>
-                        <input
-                            type="number"
-                            id="bathroom"
-                            name="bathroom"
-                            value={data.bathroom}
-                            onChange={handleInputChange}
-                            className="form-input"
-                            placeholder="Enter number of bathrooms"
-                            required
-                            min="1"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="description" className="form-label">
-                            Property Description <span>*</span>
-                        </label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={data.description}
-                            onChange={handleInputChange}
-                            className="form-input"
-                            placeholder="Describe your property in detail"
-                            required
-                            rows="4"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label className="form-label">
-                            Property Photos <span>*</span>
-                        </label>
-
-                        <label className="upload-box">
-                            <input
-                                type="file"
-                                onChange={handleImageChange}
-                                multiple
-                                accept="image/*"
-                                className="file-input"
-                            />
-
-                            {previews.length === 0 ? (
-                                <div className="upload-content">
-                                    <svg className="upload-icon" viewBox="0 0 24 24">
-                                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-                                    </svg>
-                                    <p>Click to upload photos</p>
-                                    <small>JPG or PNG (max 5 MB each)</small>
-                                </div>
-                            ) : (
-                                /* Thumbnails grid lives INSIDE the box */
-                                <div className="preview-grid">
-                                    {previews.map((preview) => (
-                                        <div key={preview.id} className="thumb">
-                                            <img src={preview.url} height={"50px"} alt="preview" />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeImage(preview.id)}
-                                                className="remove-btn"
-                                                aria-label="Remove photo"
-                                            >
-                                                ×
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </label>
-
-                        {/* Optional image counter just below the box */}
-                        <div className="image-counter">
-                            {previews.length > 0
-                                ? `${previews.length} / 5 photos selected`
-                                : 'No photos selected'}
-                        </div>
-                    </div>
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
-                    >
-                        {isSubmitting ? (
-                            <>
-                                <span className="spinner"></span>
-                                Verifying...
-                            </>
-                        ) : 'Verify Property'}
-                    </button>
-                </form>
             </div>
-        </div>
+        </>
     );
 };
 

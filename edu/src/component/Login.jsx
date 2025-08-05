@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
+import { Helmet } from 'react-helmet';
 import './Login.css';
 import axiosInstance from '../utils/axios';
 
@@ -60,87 +61,129 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page-container">
-      <div className="login-container">
-        {/* Back Button */}
-        <button className="back-button" onClick={() => navigate(-1)}>
-          <FiArrowLeft size={24} />
-        </button>
+    <>
+      <Helmet>
+        <title>Login | Gharbeti-sewa</title>
+        <meta name="description" content="Log in to your account to access exclusive features and manage your properties." />
+        <meta property="og:title" content="Login | Your Website Name" />
+        <meta property="og:description" content="Log in to your account to access exclusive features and manage your properties." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={window.location.href} />
+        <link rel="canonical" href={`${window.location.origin}/login`} />
+      </Helmet>
 
-        {/* Alert Container */}
-        {showAlert && (
-          <div className="alert-overlay">
-            <div className="alert-container">
-              <div className="alert-message">{error}</div>
+      <main className="login-page-container">
+        <div className="login-container">
+          {/* Back Button */}
+          <button
+            className="back-button"
+            onClick={() => navigate(-1)}
+            aria-label="Go back to previous page"
+          >
+            <FiArrowLeft size={24} />
+          </button>
+
+          {/* Alert Container */}
+          {showAlert && (
+            <div className="alert-overlay" role="alert">
+              <div className="alert-container">
+                <div className="alert-message">{error}</div>
+                <button
+                  className="alert-button"
+                  onClick={closeAlert}
+                  aria-label="Close error message"
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="login-card">
+            <h1 className="login-title">Log In to Your Account</h1>
+
+            <form onSubmit={handleSubmit} className="login-form">
+              <div className="form-group">
+                <label htmlFor="email" className="form-label">
+                  Email Address
+                  <span className="required-field" aria-hidden="true"> *</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="form-input"
+                  required
+                  placeholder="Enter your email"
+                  autoComplete="username"
+                  aria-required="true"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password" className="form-label">
+                  Password
+                  <span className="required-field" aria-hidden="true"> *</span>
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="form-input"
+                  required
+                  minLength="6"
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
+                  aria-required="true"
+                />
+              </div>
+
+              <div className="forgot-password-link">
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={() => navigate('/forgot-password')}
+                  aria-label="Forgot password"
+                >
+                  Forgot Password?
+                </button>
+              </div>
+
               <button
-                className="alert-button"
-                onClick={closeAlert}
+                type="submit"
+                className="submit-button"
+                disabled={loading}
+                aria-busy={loading}
               >
-                OK
+                {loading ? (
+                  <>
+                    <span className="spinner" aria-hidden="true"></span>
+                    <span>Logging in...</span>
+                  </>
+                ) : 'Log In'}
               </button>
+            </form>
+
+            <div className="login-footer">
+              <p>
+                Don't have an account?{' '}
+                <button
+                  className="link-button"
+                  onClick={() => navigate('/register')}
+                  aria-label="Register new account"
+                >
+                  Register here
+                </button>
+              </p>
             </div>
-          </div>
-        )}
-
-        <div className="login-card">
-          <h2 className="login-title">Log In</h2>
-
-          <form onSubmit={handleSubmit} className="login-form">
-            <div className="form-group">
-              <label htmlFor="email" className="form-label">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="form-input"
-                required
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password" className="form-label">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="form-input"
-                required
-                minLength="6"
-                placeholder="Enter your password"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <span className="spinner"></span>
-                  Logging in...
-                </>
-              ) : 'Log In'}
-            </button>
-          </form>
-
-          <div className="login-footer">
-            Don't have an account?{' '}
-            <button
-              className="link-button"
-              onClick={() => navigate('/register')}
-            >
-              Register here
-            </button>
           </div>
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 };
 

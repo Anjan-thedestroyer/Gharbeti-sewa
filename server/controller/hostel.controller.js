@@ -7,10 +7,10 @@ export async function AddHostel(req, res) {
     try {
         const userId = req.userId;
         const images = req.files
-        const { name, location, description, Rooms, contact_no, email, price, coordinate } = req.body;
+        const { name, location, description, room, contact_no, email, price, coordinate } = req.body;
 
         // Validation
-        if (!name || !location || !Rooms || !contact_no || !email || !price) {
+        if (!name || !location || !room || !contact_no || !email || !price) {
             return res.status(400).json({
                 message: "Please provide all required fields.",
                 success: false,
@@ -36,7 +36,7 @@ export async function AddHostel(req, res) {
         const hostel = await HostelModel.create({
             name,
             location,
-            Rooms,
+            room,
             contact_no,
             email,
             userId: userId,
@@ -75,7 +75,7 @@ export async function verifyHostel(req, res) {
         const hostel = await HostelModel.findByIdAndUpdate(
             id,
             {
-                set: { isVerified: true }
+                $set: { isVerified: true }
 
             }, { new: true })
         if (!hostel) {
@@ -150,14 +150,6 @@ export async function updateHostel(req, res) {
     try {
         const userId = req.userId;
         const { id } = req.params;
-        const {
-            name, location, Rooms, contact_no, email,
-            price, coordinate, description, length,
-            width, room, bathroom
-        } = req.body;
-
-        const oldImages = req.body.oldImages || [];
-        const images = req.files || []; // newly uploaded files
 
         if (!id) {
             return res.status(400).json({
@@ -181,22 +173,41 @@ export async function updateHostel(req, res) {
             });
         }
 
-        // Upload new files if any
+        // Extract fields from req.body
+        const {
+            name,
+            location,
+            contact_no,
+            email,
+            price,
+            coordinate,
+            description,
+            length,
+            width,
+            room,
+            bathroom
+        } = req.body;
+        let oldImages = req.body.existingImages || [];
+        if (typeof oldImages === 'string') {
+            oldImages = [oldImages];
+        }
+
+        const images = req.files || [];
+
+        // Upload new images to Cloudinary (or your upload service)
         let newImageUrls = [];
         if (images.length > 0) {
             const uploads = await Promise.all(
-                images.map((img) => uploadImageClodinary(img))
+                images.map(img => uploadImageClodinary(img))
             );
-            newImageUrls = uploads.map((upload) => upload.url);
+            newImageUrls = uploads.map(upload => upload.url);
         }
 
-        // Merge old + new images
         const combinedImages = [...oldImages, ...newImageUrls];
 
         const updates = {
             ...(name && { name }),
             ...(location && { location }),
-            ...(Rooms && { Rooms }),
             ...(contact_no && { contact_no }),
             ...(email && { email }),
             ...(price && { price }),
@@ -209,14 +220,17 @@ export async function updateHostel(req, res) {
             ...(combinedImages.length > 0 && { image: combinedImages }),
         };
 
-        const updatedHostel = await HostelModel.findByIdAndUpdate(id, { $set: updates }, { new: true });
+        const updatedHostel = await HostelModel.findByIdAndUpdate(
+            id,
+            { $set: updates },
+            { new: true }
+        );
 
         return res.status(200).json({
             message: "Hostel updated successfully.",
             success: true,
-            data: updatedHostel
+            data: updatedHostel,
         });
-
     } catch (error) {
         console.error("UpdateHostel Error:", error);
         return res.status(500).json({
@@ -225,9 +239,6 @@ export async function updateHostel(req, res) {
         });
     }
 }
-
-
-
 
 
 export async function deleteHostel(req, res) {
@@ -275,8 +286,15 @@ export async function getHostelByAddress(req, res) {
         const hostels = await HostelModel.find({
             verified: true,
             $text: { $search: location },
-        })
-            .select({ score: { $meta: "textScore" } })
+        },
+            {
+                score: { $meta: "textScore" },
+            }
+        )
+            .sort({
+                score: { $meta: "textScore" },
+                sold: 1
+            })
             .populate('userId')
             .populate('buyer');
         return res.status(200).json({
@@ -333,12 +351,7 @@ export async function deleteImageByIndex(req, res) {
         }
 
         // Authorization check
-        if (hostel.owner.toString() !== userId.toString()) {
-            return res.status(403).json({
-                message: "You are not authorized to delete images of this hostel",
-                success: false
-            });
-        }
+
 
         // Index validation
         if (index < 0 || index >= hostel.image.length) {
@@ -402,5 +415,23 @@ export async function addMenu(req, res) {
             message: "Failed to add menu.",
             error: error.message
         });
+    }
+}
+export async function sold(req, res) {
+    try {
+        const { id } = req.params
+        const Hostel = await HostelModel.findByIdAndUpdate(id, {
+            $set: { sold: true }
+        }, { new: true })
+        return res.status(200).json({
+            message: "Data fetched successfully",
+            success: true,
+            error: false,
+            data: Hostel
+        })
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
+
     }
 }

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 const genertedRefreshToken = async (userId) => {
     const token = await jwt.sign({ id: userId },
         process.env.SECRET_KEY_REFRESH_TOKEN,
-        { expiresIn: '12d' }
+        { expiresIn: '9d' }
     )
 
     const updateRefreshTokenUser = await UserModel.updateOne(
@@ -16,5 +16,5 @@ const genertedRefreshToken = async (userId) => {
 
     return token
 }
-
-export default genertedRefreshToken
+//name
+export default genertedRefreshToken        

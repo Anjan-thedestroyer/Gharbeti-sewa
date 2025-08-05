@@ -1,0 +1,217 @@
+/* Base Styles */
+.accepted-work-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.work-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.work-header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.work-subtitle {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+}
+
+/* Task List */
+.task-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.task-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.task-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.task-status {
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.task-status.completed {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.task-status.in-progress {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+/* Task Details Grid */
+.task-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.task-detail-section {
+    background: #f9f9f9;
+    padding: 1.25rem;
+    border-radius: 6px;
+}
+
+.task-detail-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #34495e;
+    font-size: 1.1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.task-detail-section p {
+    margin: 0.75rem 0;
+    line-height: 1.5;
+}
+
+/* Task Actions */
+.task-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+    flex-wrap: wrap;
+}
+
+.task-actions button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    border: none;
+    flex: 1;
+    min-width: 120px;
+}
+
+.complete-button {
+    background-color: #4caf50;
+    color: white;
+}
+
+.complete-button:hover {
+    background-color: #388e3c;
+}
+
+.message-button {
+    background-color: #2196f3;
+    color: white;
+}
+
+.message-button:hover {
+    background-color: #1976d2;
+}
+
+.details-button {
+    background-color: #673ab7;
+    color: white;
+}
+
+.details-button:hover {
+    background-color: #5e35b1;
+}
+
+/* Loading and Error States (same as before) */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    gap: 1rem;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.error-state {
+    background-color: #fdecea;
+    border-left: 4px solid #e57373;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .task-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .work-header h1 {
+        font-size: 2rem;
+    }
+
+    .task-actions button {
+        min-width: 100%;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

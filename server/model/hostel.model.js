@@ -29,9 +29,9 @@ const HostelSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    Rooms: {
-        type: String,
-        required: true
+    room: {
+        type: Number,
+        default: 0,
     },
     contact_no: {
         type: Number,

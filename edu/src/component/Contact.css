@@ -75,3 +75,33 @@
         visibility: hidden;
     }
 }
+
+/* Add to Contact.css */
+.contact-info-list {
+    list-style: none;
+    padding: 0;
+}
+
+.contact-info-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.contact-info-list img {
+    margin-right: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-result {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    min-height: 2rem;
+}
+
+address {
+    font-style: normal;
+}

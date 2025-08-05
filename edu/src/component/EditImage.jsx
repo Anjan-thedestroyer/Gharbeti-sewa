@@ -101,16 +101,13 @@ const EditImage = () => {
             const formData = new FormData();
             formData.append('id', id);
 
-            // Separate existing and new images
             const existingImages = previews.filter(img => img.isExisting).map(img => img.url);
             const newImages = previews.filter(img => !img.isExisting).map(img => img.file);
 
-            // Add existing image URLs
             existingImages.forEach(url => {
                 formData.append('existingImages', url);
             });
 
-            // Add new image files
             newImages.forEach(file => {
                 formData.append('image', file);
             });
@@ -217,7 +214,7 @@ const EditImage = () => {
                     <button
                         type="button"
                         className="cancel-btn"
-                        onClick={() => navigate(`/hostel/${id}`)}
+                        onClick={() => navigate(-1)}
                         disabled={isSubmitting}
                     >
                         Cancel

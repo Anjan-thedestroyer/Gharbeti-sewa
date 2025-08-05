@@ -1,10 +1,12 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import axiosInstance from '../utils/axios';
 import './Gharbeti.css';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
+import { Helmet } from 'react-helmet';
+
+const GEOAPIFY_API_KEY = 'bce86ce19aaa4d6db5f9307c35caff9a';
 
 const Gharbeti = () => {
     const navigate = useNavigate();
@@ -15,7 +17,8 @@ const Gharbeti = () => {
         coordinate: { lat: "", lon: "" },
         Contact_no1: "",
         Contact_no2: "",
-        pricing: "",
+        price: "",
+        shutter: "",
     });
 
     const [success, setSuccess] = useState(false);
@@ -27,7 +30,26 @@ const Gharbeti = () => {
     const [locationSuggestions, setLocationSuggestions] = useState([]);
     const [showLocationDropdown, setShowLocationDropdown] = useState(false);
 
-    const OPENCAGE_API_KEY = 'e9dc05bc97ad4b048d796966fedc7fb0';
+    // Refs for outside click detection
+    const locationDropdownRef = useRef(null);
+    const locationInputRef = useRef(null);
+
+    // Close dropdown on outside click
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                locationDropdownRef.current &&
+                !locationDropdownRef.current.contains(event.target) &&
+                locationInputRef.current &&
+                !locationInputRef.current.contains(event.target)
+            ) {
+                setShowLocationDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     useEffect(() => {
         if (!locationSearchTerm || locationSearchTerm.length < 2) {
@@ -38,19 +60,19 @@ const Gharbeti = () => {
 
         const fetchLocations = async () => {
             try {
-                const response = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
+                const response = await axios.get('https://api.geoapify.com/v1/geocode/autocomplete', {
                     params: {
-                        key: OPENCAGE_API_KEY,
-                        q: `${locationSearchTerm} Kathmandu`,
-                        countrycode: 'np',
-                        limit: 10,
+                        text: locationSearchTerm,
+                        filter: 'countrycode:np', // restrict to Nepal
+                        limit: 15,
+                        apiKey: GEOAPIFY_API_KEY,
                     },
                 });
 
-                const suggestions = response.data.results.map(place => ({
-                    formatted: place.formatted,
-                    lat: place.geometry.lat,
-                    lng: place.geometry.lng,
+                const suggestions = response.data.features.map(feature => ({
+                    formatted: feature.properties.formatted,
+                    lat: feature.properties.lat,
+                    lng: feature.properties.lon,
                 }));
 
                 setLocationSuggestions(suggestions);
@@ -66,6 +88,7 @@ const Gharbeti = () => {
         return () => clearTimeout(debounceTimer);
     }, [locationSearchTerm]);
 
+    // Handle input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -75,6 +98,7 @@ const Gharbeti = () => {
         }
     };
 
+    // When a suggestion is selected
     const handleLocationSelect = (location) => {
         setFormData(prev => ({
             ...prev,
@@ -85,17 +109,20 @@ const Gharbeti = () => {
         setShowLocationDropdown(false);
     };
 
+    // Form validation
     const validateForm = () => {
-        const { name, location, Contact_no1, pricing } = formData;
+        const { name, location, Contact_no1, price, shutter } = formData;
         if (!name.trim()) return "Property name is required";
         if (!location.trim()) return "Location is required";
         if (!Contact_no1.trim()) return "Primary contact is required";
         if (Contact_no1.replace(/\D/g, '').length < 10) return "Phone number must have at least 10 digits";
-        if (!pricing) return "Pricing is required";
-        if (isNaN(pricing)) return "Pricing must be a number";
+        if (!price) return "Price is required";
+        if (isNaN(price)) return "Price must be a number";
+
         return null;
     };
 
+    // Form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -125,7 +152,8 @@ const Gharbeti = () => {
                 coordinate: { lat: "", lon: "" },
                 Contact_no1: "",
                 Contact_no2: "",
-                pricing: ""
+                price: "",
+                shutter: "",
             });
             setLocationSearchTerm("");
 
@@ -137,6 +165,7 @@ const Gharbeti = () => {
         }
     };
 
+    // Close alert handler
     const closeAlert = () => {
         setShowAlert(false);
         setError(null);
@@ -146,8 +175,28 @@ const Gharbeti = () => {
     };
 
     return (
-        <div className="gharbeti-container">
-            {/* Alert Modal */}
+        <div className="gharbeti-container" itemScope itemType="https://schema.org/RealEstateAgent">
+            <Helmet>
+                <title>List Your Property | Gharbeti</title>
+                <meta name="description" content="Add your rental property to Gharbeti. Reach thousands of potential tenants looking for homes in Nepal." />
+                <meta property="og:title" content="List Your Property | Gharbeti" />
+                <meta property="og:description" content="List your rental property on Gharbeti and connect with potential tenants in Nepal." />
+                <script type="application/ld+json">
+                    {`
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "WebPage",
+                        "name": "List Your Property",
+                        "description": "Property listing form for landlords to add rental properties",
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "Gharbeti"
+                        }
+                    }
+                    `}
+                </script>
+            </Helmet>
+
             {showAlert && (
                 <div className="alert-overlay">
                     <div className="alert-container">
@@ -155,7 +204,9 @@ const Gharbeti = () => {
                             {success ? '✓' : '!'}
                         </div>
                         <div className="alert-message">
-                            {success ? 'Property added successfully!Now our people will contact you and verify your property | सम्पत्ति सफलतापूर्वक थपियो! अब हाम्रा मानिसहरूले तपाईंलाई सम्पर्क गर्नेछन् र तपाईंको सम्पत्ति प्रमाणित गर्नेछन्।' : error}
+                            {success
+                                ? 'Property added successfully! Now our people will contact you and verify your property | सम्पत्ति सफलतापूर्वक थपियो! अब हाम्रा मानिसहरूले तपाईंलाई सम्पर्क गर्नेछन् र तपाईंको सम्पत्ति प्रमाणित गर्नेछन्।'
+                                : error}
                         </div>
                         <button
                             className="alert-button"
@@ -176,7 +227,7 @@ const Gharbeti = () => {
                     <p className="form-subtitle">Add a new rental property</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="form">
+                <form onSubmit={handleSubmit} className="form" itemScope itemType="https://schema.org/AddAction">
                     <div className="form-group">
                         <label htmlFor="name" className="form-label">
                             Property Name <span className="required">*</span>
@@ -190,6 +241,7 @@ const Gharbeti = () => {
                             className="form-input"
                             placeholder="e.g. Sunshine Villa"
                             required
+                            itemProp="name"
                         />
                     </div>
 
@@ -200,6 +252,7 @@ const Gharbeti = () => {
                         </label>
                         <div className="dropdown-container">
                             <input
+                                ref={locationInputRef}
                                 type="text"
                                 id="location"
                                 name="location"
@@ -209,9 +262,10 @@ const Gharbeti = () => {
                                 placeholder="e.g. Kathmandu"
                                 autoComplete="off"
                                 onFocus={() => setShowLocationDropdown(locationSearchTerm.length > 0)}
+                                itemProp="address"
                             />
                             {showLocationDropdown && (
-                                <div className="dropdown-list">
+                                <div className="dropdown-list" ref={locationDropdownRef}>
                                     {locationSuggestions.length > 0 ? (
                                         locationSuggestions.map((loc, i) => (
                                             <div
@@ -247,6 +301,7 @@ const Gharbeti = () => {
                                 className="form-input"
                                 placeholder="98XXXXXXXX"
                                 required
+                                itemProp="telephone"
                             />
                         </div>
 
@@ -262,34 +317,53 @@ const Gharbeti = () => {
                                 onChange={handleInputChange}
                                 className="form-input"
                                 placeholder="98XXXXXXXX (optional)"
+                                itemProp="telephone"
                             />
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="pricing" className="form-label">
+                        <label htmlFor="price" className="form-label">
                             Monthly Rent (NPR) <span className="required">*</span>
                         </label>
                         <div className="price-input-container">
                             <input
                                 type="number"
-                                id="pricing"
-                                name="pricing"
-                                value={formData.pricing}
+                                id="price"
+                                name="price"
+                                value={formData.price}
                                 onChange={handleInputChange}
                                 className="form-input price-input"
                                 placeholder="e.g. 25000"
                                 min="0"
                                 step="1000"
                                 required
+                                itemProp="price"
                             />
                         </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="shutter" className="form-label">
+                            Shutter <span className="required">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            id="shutter"
+                            name="shutter"
+                            value={formData.shutter}
+                            onChange={handleInputChange}
+                            className="form-input"
+                            placeholder="e.g. 5"
+                            itemProp="shutter"
+                        />
                     </div>
 
                     <button
                         type="submit"
                         disabled={isSubmitting}
                         className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
+                        itemProp="potentialAction"
                     >
                         {isSubmitting ? (
                             <>

@@ -9,6 +9,8 @@ import forgotPasswordTemplate from '../utils/forgotPasswordTemplate.js'
 import jwt from 'jsonwebtoken'
 import HostelModel from '../model/hostel.model.js'
 import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+dotenv.config()
 
 export async function registerUserController(request, response) {
     try {
@@ -310,51 +312,60 @@ export async function updateUserDetails(request, response) {
 //forgot password not login
 export async function forgotPasswordController(request, response) {
     try {
-        const { email } = request.body
+        const { email } = request.body;
 
-        const user = await UserModel.findOne({ email })
+        const user = await UserModel.findOne({ email }).lean();
 
         if (!user) {
             return response.status(400).json({
                 message: "Email not available",
                 error: true,
                 success: false
-            })
+            });
         }
 
-        const otp = generatedOtp()
-        const expireTime = new Date() + 60 * 60 * 1000 // 1hr
+        const otp = generatedOtp();
+        const expireTime = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
 
-        const update = await UserModel.findByIdAndUpdate(user._id, {
+        await UserModel.findByIdAndUpdate(user._id, {
             forgot_password_otp: otp,
-            forgot_password_expiry: new Date(expireTime).toISOString()
-        })
+            forgot_password_expiry: expireTime.toISOString()
+        });
 
-        await sendEmail({
-            sendTo: email,
-            subject: "Forgot password from Binkeyit",
-            html: forgotPasswordTemplate({
-                name: user.name,
-                otp: otp
-            })
-        })
+        try {
+            await sendEmail({
+                sendTo: email,
+                subject: "Forgot password from Gharbeti-sewa",
+                html: forgotPasswordTemplate({
+                    name: user.name,
+                    otp: otp
+                })
+            });
+        } catch (emailError) {
+            return response.status(500).json({
+                message: emailError.message || emailError,
+                error: true,
+                success: false
+            });
+        }
 
         return response.json({
-            message: "check your email",
+            message: "Check your email",
             error: false,
             success: true
-        })
+        });
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
 
         return response.status(500).json({
             message: error.message || error,
             error: true,
             success: false
-        })
+        });
     }
 }
+
 
 //verify forgot password otp
 export async function verifyForgotPasswordOtp(request, response) {
@@ -397,8 +408,7 @@ export async function verifyForgotPasswordOtp(request, response) {
             })
         }
 
-        //if otp is not expired
-        //otp === user.forgot_password_otp
+
 
         const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
             forgot_password_otp: "",
@@ -474,40 +484,64 @@ export async function resetpassword(request, response) {
 }
 
 
-//refresh token controler
+
 export async function refreshToken(request, response) {
     try {
-        const refreshToken = request.cookies.refreshToken || request?.headers?.authorization?.split(" ")[1]  /// [ Bearer token]
+        const refreshToken = request.cookies.refreshToken || request?.headers?.authorization?.split(" ")[1];
 
         if (!refreshToken) {
-            return response.status(401).json({
-                message: "Invalid token",
+            return response.status(405).json({
+                message: "Refresh token missing",
                 error: true,
                 success: false
-            })
+            });
         }
 
-        const verifyToken = await jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH_TOKEN)
+        let verifyToken;
+        try {
+            verifyToken = jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH_TOKEN);
+        } catch (err) {
+            if (err.name === 'TokenExpiredError') {
+                return response.status(401).json({
+                    message: "Refresh token expired",
+                    expiredAt: err.expiredAt,
+                    error: true,
+                    success: false
+                });
+            }
+            if (err.name === 'JsonWebTokenError') {
+                return response.status(401).json({
+                    message: "Invalid refresh token",
+                    error: true,
+                    success: false
+                });
+            }
 
-        if (!verifyToken) {
-            return response.status(401).json({
-                message: "token is expired",
+            return response.status(500).json({
+                message: "Error verifying refresh token",
                 error: true,
                 success: false
-            })
+            });
         }
 
-        const userId = verifyToken?.id
+        const userId = verifyToken?.id; // ✅ corrected from userId to id
+        if (!userId) {
+            return response.status(400).json({
+                message: "Invalid token payload",
+                error: true,
+                success: false
+            });
+        }
 
-        const newAccessToken = await generatedAccessToken(userId)
+        const newAccessToken = await generatedAccessToken(userId);
 
         const cookiesOption = {
             httpOnly: true,
             secure: true,
             sameSite: "None"
-        }
+        };
 
-        response.cookie('accessToken', newAccessToken, cookiesOption)
+        response.cookie('accessToken', newAccessToken, cookiesOption);
 
         return response.json({
             message: "New Access token generated",
@@ -516,19 +550,20 @@ export async function refreshToken(request, response) {
             data: {
                 accessToken: newAccessToken
             }
-        })
-
+        });
 
     } catch (error) {
         return response.status(500).json({
             message: error.message || error,
             error: true,
             success: false
-        })
+        });
     }
 }
 
-//get login user details
+
+
+
 export async function userDetails(request, response) {
     try {
         const userId = request.userId;
@@ -541,7 +576,7 @@ export async function userDetails(request, response) {
             });
         }
 
-        const user = await UserModel.findById(userId).select('-password -refresh_token');
+        const user = await UserModel.findById(userId).select('-password -refresh_token').populate('freelancerId')
 
         if (!user) {
             return response.status(404).json({

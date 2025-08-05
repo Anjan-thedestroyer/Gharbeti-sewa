@@ -14,6 +14,14 @@ import EditDetails from './component/EditDetails'
 import EditImage from './component/EditImage'
 import VerifyEmail from './component/Verify_user'
 import AllBuyer from './component/AllBuyer'
+import Privacy from './component/privacy'
+import Terms from './component/Terms'
+import OtpVerification from './component/OtpVerification'
+import ResetPassword from './component/ResetPassword'
+import ForgotPassword from './component/ForgotPassword'
+import ListFreelancer from './component/ListFreelancer'
+import TaskReq from './component/TaskReq'
+import AccWork from './component/AccWork'
 
 const App = () => {
 
@@ -27,7 +35,9 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/unverified' element={<UnVerified />} />
+        <Route path='/verify/:id/:taskId' element={<Verify />} />
         <Route path='/verify/:id' element={<Verify />} />
+
         <Route path='/bhada/:id' element={<Buyer />} />
         <Route path='/apply/:id' element={<ClientApply />} />
         <Route path='/hostel' element={<HostelList />} />
@@ -36,7 +46,14 @@ const App = () => {
         <Route path='/edit-image/:id' element={<EditImage />} />
         <Route path='/verify-email' element={<VerifyEmail />} />
         <Route path='/list-buyer' element={<AllBuyer />} />
-
+        <Route path='/privacy' element={<Privacy />} />
+        <Route path='/terms' element={<Terms />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/verification-otp' element={<OtpVerification />} />
+        <Route path='/list-freelancer' element={<ListFreelancer />} />
+        <Route path='/accepted-work' element={<AccWork />} />
+        <Route path='/task-req' element={<TaskReq />} />
       </Routes>
     </Router>
   )

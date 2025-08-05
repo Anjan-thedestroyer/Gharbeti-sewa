@@ -37,7 +37,10 @@ const LandSchema = new mongoose.Schema(
                 message: props => `${props.value} is not a valid 10-digit phone number!`
             },
         },
-        pricing: {
+        shutter: {
+            type: String
+        },
+        price: {
             type: Number,
             default: 1000,
         },
@@ -63,10 +66,7 @@ const LandSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-        washroom: {
-            type: Number,
-            default: 0,
-        },
+
         bathroom: {
             type: Number,
             default: 0,

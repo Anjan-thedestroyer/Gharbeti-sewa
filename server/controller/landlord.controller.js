@@ -3,8 +3,10 @@ import uploadImageClodinary from "../utils/uploadImageClodinary.js"
 
 export async function AddLand(req, res) {
     try {
-        const { name, location, coordinate, Contact_no1, Contact_no2, pricing } = req.body
-        if (!name || !location || !Contact_no1 || !Contact_no2 || !pricing) {
+        const { name, location, coordinate, Contact_no1, Contact_no2, price
+            , shutter
+        } = req.body
+        if (!name || !location || !Contact_no1 || !Contact_no2 || !price) {
             return res.status(400).json({ message: "Please fill all the fields." })
 
         }
@@ -13,9 +15,9 @@ export async function AddLand(req, res) {
             location,
             Contact_no1,
             Contact_no2,
-
             coordinate,
-            pricing
+            price,
+            shutter
         })
         res.status(201).json({ message: "Landlord Added Successfully", data: land })
 
@@ -43,7 +45,6 @@ export async function GetLands(req, res) {
 export async function GetAllLands(req, res) {
     try {
         const lands = await LandModel.find({ verified: false })
-        console.log(lands)
         res.status(200).json({ message: "All Lands found", data: lands })
 
     } catch {
@@ -55,7 +56,7 @@ export async function UpdateLand(req, res) {
     try {
         const { id } = req.params
         const userId = req.userId
-        const { name, coordinate, location, Contact_no1, Contact_no2, pricing } = req.body
+        const { name, coordinate, location, Contact_no1, Contact_no2, price, room, shutter } = req.body
         const land = await LandModel.findById(id)
         if (!land) {
             return res.status(404).json({
@@ -67,10 +68,13 @@ export async function UpdateLand(req, res) {
         const updates = {};
         if (name !== undefined) updates.name = name;
         if (location !== undefined) updates.location = location;
-        if (Contact_no1 !== undefined) updates.contact_no = contact_no;
-        if (Contact_no2 !== undefined) updates.email = email;
-        if (pricing !== undefined) updates.price = price;
+        if (Contact_no1 !== undefined) updates.contact_no = Contact_no1;
+        if (Contact_no2 !== undefined) updates.contact_no = Contact_no2;
+        if (room !== undefined) updates.room = room
+        if (price !== undefined) updates.price = price;
         if (coordinate !== undefined) updates.coordinate = coordinate;
+        if (shutter !== undefined) updates.shutter = shutter;
+
         if (!id) {
             return res.status(400).json({ message: "Please fill all the fields." })
         }
@@ -164,7 +168,10 @@ export async function getVerifiedLandByAddress(req, res) {
                 score: { $meta: "textScore" },
             }
         )
-            .sort({ score: { $meta: "textScore" } })
+            .sort({
+                score: { $meta: "textScore" },
+                sold: 1
+            })
             .populate("Applicants_details");
 
 
@@ -204,5 +211,23 @@ export async function getVerifiedLandByAddressAndPrice(req, res) {
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+export async function sold(req, res) {
+    try {
+        const { id } = req.params
+        const land = await LandModel.findByIdAndUpdate(id, {
+            $set: { sold: true }
+        }, { new: true })
+        return res.status(200).json({
+            message: "Data fetched successfully",
+            success: true,
+            error: false,
+            data: land
+        })
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
+
     }
 }

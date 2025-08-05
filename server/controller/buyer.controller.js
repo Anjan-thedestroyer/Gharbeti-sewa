@@ -50,7 +50,7 @@ export async function AddBuyerLandlord(req, res) {
 export async function AddBuyerHostel(req, res) {
     try {
         const { id } = req.params;
-        const { name, phone, No_of_people, No_of_rooms } = req.body;
+        const { name, phone, No_of_people, No_of_rooms, email } = req.body;
 
         if (!name || !phone || !No_of_people || !No_of_rooms) {
             return res.status(400).json({
@@ -61,6 +61,7 @@ export async function AddBuyerHostel(req, res) {
 
         const Buyer = await BuyerModel.create({
             name,
+            email,
             phone,
             No_of_people,
             No_of_rooms,
@@ -70,7 +71,7 @@ export async function AddBuyerHostel(req, res) {
         const Hostel = await HostelModel.findByIdAndUpdate(
             id,
             {
-                $push: { buyer: Buyer._id },  // ✅ Add to array instead of overwriting
+                $push: { buyer: Buyer._id },
                 $inc: { Applicants: 1 },
             },
             { new: true }

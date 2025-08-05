@@ -1,14 +1,32 @@
-import React from 'react'
-import './Title.css'
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import './Title.css';
 
-const Title = ({subTitle,title}) => {
+const Title = ({ subTitle, title, schemaType }) => {
+  const itemType = schemaType || "https://schema.org/WebPage";
+
   return (
-    <div className='title'>
-        <p>{subTitle}</p>
-        <h2>{title}</h2>
-      
-    </div>
-  )
-}
+    <>
+      {title && (
+        <Helmet>
+          <meta property="og:title" content={title} />
+        </Helmet>
+      )}
 
-export default Title
+      <div className="title" itemScope itemType={itemType}>
+        {subTitle && (
+          <p className="subtitle" itemProp="alternativeHeadline">
+            {subTitle}
+          </p>
+        )}
+        {title && (
+          <h2 itemProp="headline">
+            {title}
+          </h2>
+        )}
+      </div>
+    </>
+  );
+};
+
+export default Title;

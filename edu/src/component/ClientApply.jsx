@@ -1,9 +1,9 @@
-// src/pages/ClientApply.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import './Gharbeti.css';
 import axiosInstance from "../utils/axios";
 import { FiArrowLeft } from "react-icons/fi";
+import { Helmet } from "react-helmet";
 
 const ClientApply = () => {
     const navigate = useNavigate();
@@ -107,15 +107,22 @@ const ClientApply = () => {
         setShowAlert(false);
         setError(null);
         if (success) {
-            navigate(-1); // Go back after successful submission
+            navigate(-1);
         }
     };
 
     return (
-        <div className="gharbeti-container">
-            {/* Exact same alert system as in Gharbeti.jsx */}
+        <main className="gharbeti-container" itemScope itemType="https://schema.org/ApplyAction">
+            <Helmet>
+                <title>Apply for Property | Gharbeti</title>
+                <meta name="description" content="Apply for your desired property or hostel. Fill out the application form to get in touch with the property owner." />
+                <meta property="og:title" content="Apply for Property | Gharbeti" />
+                <meta property="og:description" content="Apply for your desired property or hostel. Fill out the application form to get in touch with the property owner." />
+                <meta name="keywords" content="property application, rent application, hostel application, Nepal property, Gharbeti" />
+            </Helmet>
+
             {showAlert && (
-                <div className="alert-overlay">
+                <div className="alert-overlay" role="alert" aria-live="assertive">
                     <div className="alert-container">
                         <div className={`alert-icon ${success ? 'success' : 'error'}`}>
                             {success ? '✓' : '!'}
@@ -128,6 +135,7 @@ const ClientApply = () => {
                         <button
                             className="alert-button"
                             onClick={closeAlert}
+                            aria-label="Close alert"
                         >
                             OK
                         </button>
@@ -135,20 +143,21 @@ const ClientApply = () => {
                 </div>
             )}
 
-            <div className="form-wrapper">
-                <div className="form-header">
+            <section className="form-wrapper">
+                <header className="form-header">
                     <button
                         type="button"
                         onClick={() => navigate(-1)}
                         className="back-button"
+                        aria-label="Go back"
                     >
                         <FiArrowLeft size={20} />
                     </button>
-                    <h1 className="form-title">Apply</h1>
-                    <p className="form-subtitle">Apply for this property</p>
-                </div>
+                    <h1 className="form-title" itemProp="name">Apply for Property</h1>
+                    <p className="form-subtitle">Fill out the form to apply for this property</p>
+                </header>
 
-                <form onSubmit={handleSubmit} className="form">
+                <form onSubmit={handleSubmit} className="form" itemScope itemType="https://schema.org/ContactPage">
                     <div className="form-group">
                         <label htmlFor="name" className="form-label">
                             Full Name <span className="required">*</span>
@@ -162,6 +171,7 @@ const ClientApply = () => {
                             className="form-input"
                             placeholder="e.g. Ram Sharma"
                             required
+                            itemProp="name"
                         />
                     </div>
 
@@ -178,6 +188,7 @@ const ClientApply = () => {
                             className="form-input"
                             placeholder="e.g. ram@gmail.com"
                             required
+                            itemProp="email"
                         />
                     </div>
 
@@ -194,6 +205,7 @@ const ClientApply = () => {
                             className="form-input"
                             placeholder="e.g. 98########"
                             required
+                            itemProp="telephone"
                         />
                     </div>
 
@@ -235,6 +247,7 @@ const ClientApply = () => {
                         type="submit"
                         disabled={isSubmitting}
                         className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
+                        itemProp="potentialAction"
                     >
                         {isSubmitting ? (
                             <>
@@ -244,8 +257,8 @@ const ClientApply = () => {
                         ) : 'Apply Now'}
                     </button>
                 </form>
-            </div>
-        </div>
+            </section>
+        </main>
     );
 };
 

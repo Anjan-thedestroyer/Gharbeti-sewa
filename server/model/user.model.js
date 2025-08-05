@@ -26,13 +26,17 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "hostel"
     }],
+    freelancerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "freelance"
+    },
     verify_email: {
         type: Boolean,
         default: false,
     },
     last_login_date: {
         type: Date,
-        default: null, // Changed from empty string to null
+        default: null,
     },
     status: {
         type: String,
@@ -45,16 +49,17 @@ const userSchema = new mongoose.Schema({
     },
     forgot_password_expiry: {
         type: Date,
-        default: null, // Changed from empty string to null
+        default: null,
     },
+
 
     role: {
         type: String,
-        enum: ["ADMIN", "USER"],
+        enum: ["ADMIN", "USER", "Freelancer"],
         default: "USER",
     },
 }, {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true,
 });
 
 // Create the User model

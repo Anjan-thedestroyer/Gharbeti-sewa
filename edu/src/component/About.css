@@ -7,7 +7,7 @@
     width: 90%;
 }
 
-.icon {
+.icons {
     padding: 12px 24px;
     background-color: #007bff;
     /* Bootstrap primary blue */
@@ -20,7 +20,7 @@
     transition: all 0.3s ease;
 }
 
-.icon:hover {
+.icons:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }

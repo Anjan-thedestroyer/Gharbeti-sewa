@@ -1,10 +1,7 @@
-// src/utils/axiosInstance.js
 import axios from 'axios';
-// https://gharbeti-sewa.onrender.com/api
-// 'http://localhost:8080/api'||
-// Create Axios instance
+
 const axiosInstance = axios.create({
-    baseURL: 'https://gharbeti-sewa.onrender.com/api',
+    baseURL: 'http://localhost:8080/api',
     timeout: 10000,
     withCredentials: true,
     headers: {
@@ -14,7 +11,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('refreshToken');
+        const token = localStorage.getItem('accessToken');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -23,6 +20,7 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+// Handle 401 errors and refresh token
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -30,9 +28,10 @@ axiosInstance.interceptors.response.use(
 
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
+
             try {
                 const refreshResponse = await axios.post(
-                    'https://gharbeti-sewa.onrender.com/api/user/refresh-token',
+                    'http://localhost:8080/api/user/refresh-token',
                     {},
                     {
                         withCredentials: true,
@@ -42,18 +41,26 @@ axiosInstance.interceptors.response.use(
                     }
                 );
 
-
                 const newAccessToken = refreshResponse.data?.data?.accessToken;
-                console.log(newAccessToken)
+                if (!newAccessToken) throw new Error("No access token returned");
 
                 localStorage.setItem('accessToken', newAccessToken);
-
                 axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
                 return axiosInstance(originalRequest);
-            } catch (refreshError) {
-                return Promise.reject(refreshError);
+            } catch (error) {
+                if (error.response?.status === 401) {
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    localStorage.removeItem('status');
+
+
+                    window.location.href = '/';
+                }
+
+                console.error("Refresh token failed:", error.message);
+                return Promise.reject(error);
             }
         }
 

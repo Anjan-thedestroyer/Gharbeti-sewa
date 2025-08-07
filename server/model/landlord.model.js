@@ -66,7 +66,6 @@ const LandSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-
         bathroom: {
             type: Number,
             default: 0,
@@ -85,16 +84,15 @@ const LandSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
-LandSchema.pre('save', function (next) {
-    if (this.isModified('location.raw')) {
-        this.location.normalized = this.location.raw
-            .split(',')
-            .map(part => part.trim())
-            .join(', ');
 
-        this.location.primary = this.location.raw
-            .split(',')
-            .map(part => part.trim())
+LandSchema.pre('save', function (next) {
+    // Safely handle location.raw
+    if (this.isModified('location.raw') && this.location?.raw) {
+        const parts = this.location.raw.split(',').map(part => part.trim());
+
+        this.location.normalized = parts.join(', ');
+
+        this.location.primary = parts
             .filter(part => {
                 const lowerPart = part.toLowerCase();
                 return part &&
@@ -105,8 +103,9 @@ LandSchema.pre('save', function (next) {
             .join(', ');
     }
 
+    // Safely handle dimensions
     if (this.isModified('dimensions')) {
-        if (this.dimensions.length && this.dimensions.width) {
+        if (this.dimensions?.length && this.dimensions?.width) {
             this.dimensions.area = this.dimensions.length * this.dimensions.width;
         }
     }

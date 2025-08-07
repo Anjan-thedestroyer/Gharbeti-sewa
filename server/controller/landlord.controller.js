@@ -156,63 +156,73 @@ export async function getVerifiedLandByAddress(req, res) {
         const { location = "" } = req.query;
 
         if (!location.trim()) {
-            return res.status(400).json({ message: "Address is required" });
+            return res.status(400).json({
+                message: "Address is required",
+                success: false,
+            });
         }
 
-        const land = await LandModel.find(
-            {
-                verified: true,
-                $text: { $search: location },
-            },
-            {
-                score: { $meta: "textScore" },
-            }
-        )
-            .sort({
-                score: { $meta: "textScore" },
-                sold: 1
-            })
+        const extractPrimaryLocation = (address) => {
+            return address
+                .split(',')
+                .map(part => part.trim())
+                .filter(part => {
+                    const lowerPart = part.toLowerCase();
+                    return part &&
+                        !/^\d+$/.test(part) &&
+                        !['nepal', 'नेपाल'].includes(lowerPart);
+                })
+                .slice(0, 2)
+                .join(', ');
+        };
+
+        const searchLocation = extractPrimaryLocation(location);
+
+        const regexPattern = searchLocation
+            .split(',')
+            .map(part => part.trim())
+            .filter(Boolean)
+            .map(part => `(?=.*${part})`)
+            .join('');
+        const locationRegex = new RegExp(regexPattern, 'i');
+
+        // Fetch from DB
+        const lands = await LandModel.find({
+            verified: true,
+            $or: [
+                { location: { $regex: locationRegex } },
+            ]
+        })
+            .sort({ sold: 1 })
             .populate("Applicants_details");
 
+        let finalLands = lands;
+        if (lands.length === 0) {
+            finalLands = await LandModel.find({
+                verified: true,
+                $or: [
+                    { location: { $regex: searchLocation, $options: 'i' } },
+                ]
+            })
+                .sort({ sold: 1 })
+                .populate("Applicants_details");
+        }
 
         return res.status(200).json({
             message: "Land fetched successfully",
-            data: land,
+            success: true,
+            data: finalLands,
         });
     } catch (err) {
         console.error("Search Error:", err);
-        return res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false,
+        });
     }
 }
 
 
-export async function getVerifiedLandByAddressAndPrice(req, res) {
-    try {
-        const sort = req.body
-        const sortOrder = sort === -1 ? -1 : 1;
-        const { location = "" } = req.query;
-        const land = await LandModel.find(
-            {
-                verified: true,
-                $text: { $search: location },
-            },
-            {
-                score: { $meta: "textScore" },
-            }
-        )
-            .sort({ price: sortOrder })
-            .populate("Applicants_details");
-
-        return res.status(200).json({
-            message: "Land fetched successfully",
-            data: land,
-
-        })
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({ message: "Internal Server Error" })
-    }
-}
 export async function sold(req, res) {
     try {
         const { id } = req.params

@@ -85,12 +85,46 @@ const LandSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+LandSchema.pre('save', function (next) {
+    if (this.isModified('location.raw')) {
+        this.location.normalized = this.location.raw
+            .split(',')
+            .map(part => part.trim())
+            .join(', ');
+
+        this.location.primary = this.location.raw
+            .split(',')
+            .map(part => part.trim())
+            .filter(part => {
+                const lowerPart = part.toLowerCase();
+                return part &&
+                    !/^\d+$/.test(part) &&
+                    !['nepal', 'नेपाल'].includes(lowerPart);
+            })
+            .slice(0, 2)
+            .join(', ');
+    }
+
+    if (this.isModified('dimensions')) {
+        if (this.dimensions.length && this.dimensions.width) {
+            this.dimensions.area = this.dimensions.length * this.dimensions.width;
+        }
+    }
+
+    next();
+});
 
 LandSchema.index({
-    location: 'text',
-
+    'location.normalized': 'text',
+    'location.primary': 'text',
     description: 'text',
     name: 'text'
+});
+LandSchema.index({ location: "text", name: "text", description: "text" });
+
+LandSchema.index({
+    'coordinate.lon': 1,
+    'coordinate.lat': 1
 });
 
 const LandModel = mongoose.model("Land", LandSchema);

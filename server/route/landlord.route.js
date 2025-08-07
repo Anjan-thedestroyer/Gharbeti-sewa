@@ -9,7 +9,6 @@ import {
     VerifyLand,
     getVerifiedLand,
     getVerifiedLandByAddress,
-    getVerifiedLandByAddressAndPrice,
     sold,
 } from "../controller/landlord.controller.js";
 
@@ -40,6 +39,5 @@ router.get("/verified/all", getVerifiedLand);
 
 // POST - Get verified land by address
 router.get("/verified/by-address", getVerifiedLandByAddress);
-router.get("/verified/by-price", getVerifiedLandByAddressAndPrice)
 router.put('/sold/:id', sold)
 export default router;

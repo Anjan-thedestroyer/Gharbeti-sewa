@@ -37,6 +37,7 @@ const ListGhar = ({ data }) => {
                 params: { location }
             });
             setLands(response.data.data);
+            console.log(response.data)
         } catch (error) {
             console.error("Search error:", error);
             setError("Failed to fetch properties. Please try again.");

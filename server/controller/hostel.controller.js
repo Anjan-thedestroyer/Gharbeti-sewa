@@ -277,40 +277,79 @@ export async function deleteHostel(req, res) {
         })
     }
 }
-export async function getHostelByAddress(req, res) {
+export async function getHostelByLocation(req, res) {
     try {
-        const { location = "" } = req.query
+        const { location = "" } = req.query;
+
         if (!location.trim()) {
-            return res.status(400).json({ message: "Location is required" });
+            return res.status(400).json({
+                message: "Location is required",
+                success: false,
+            });
         }
-        const hostels = await HostelModel.find({
+
+        // Step 1: Clean and extract primary location parts
+        const extractPrimaryLocation = (loc) => {
+            return loc
+                .split(',')
+                .map(part => part.trim())
+                .filter(part => {
+                    const lowerPart = part.toLowerCase();
+                    return part &&
+                        !/^\d+$/.test(part) &&
+                        !['nepal', 'नेपाल'].includes(lowerPart);
+                })
+                .slice(0, 2)
+                .join(', ');
+        };
+
+        const searchLocation = extractPrimaryLocation(location);
+
+        // Step 2: Build regex with positive lookahead for unordered matching
+        const regexPattern = searchLocation
+            .split(',')
+            .map(part => part.trim())
+            .filter(Boolean)
+            .map(part => `(?=.*${part})`)
+            .join('');
+        const locationRegex = new RegExp(regexPattern, 'i');
+
+        // Step 3: First try flexible regex match
+        let hostels = await HostelModel.find({
             verified: true,
-            $text: { $search: location },
-        },
-            {
-                score: { $meta: "textScore" },
-            }
-        )
-            .sort({
-                score: { $meta: "textScore" },
-                sold: 1
-            })
+            location: { $regex: locationRegex }
+        })
+            .sort({ sold: 1 }) // optional: remove if no 'sold' field
             .populate('userId')
             .populate('buyer');
+
+        // Step 4: If nothing found, fallback to simpler loose regex
+        if (hostels.length === 0) {
+            hostels = await HostelModel.find({
+                verified: true,
+                location: { $regex: searchLocation, $options: 'i' }
+            })
+                .sort({ sold: 1 }) // optional
+                .populate('userId')
+                .populate('buyer');
+        }
+
         return res.status(200).json({
             message: "Hostels found successfully.",
             success: true,
             data: hostels
+        });
 
-        })
     } catch (error) {
         console.error("GetHostelByLocation Error:", error);
         return res.status(500).json({
             message: "Internal Server Error",
             success: false,
-        })
+        });
     }
 }
+
+
 export async function getHostelByPriceAndAddress(req, res) {
     try {
         const sort = req.body

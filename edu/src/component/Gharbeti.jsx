@@ -6,8 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Helmet } from 'react-helmet';
 
-const GEOAPIFY_API_KEY = 'bce86ce19aaa4d6db5f9307c35caff9a';
-
+const GEOAPIFY_API_KEY = import.meta.env.VITE_GEOAPIFY_API_KEY;
 const Gharbeti = () => {
     const navigate = useNavigate();
 

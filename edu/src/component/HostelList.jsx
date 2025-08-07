@@ -6,8 +6,7 @@ import { Helmet } from "react-helmet";
 import './Gharbeti.css';
 import axiosInstance from "../utils/axios";
 
-const GEOAPIFY_API_KEY = "bce86ce19aaa4d6db5f9307c35caff9a";
-
+const GEOAPIFY_API_KEY = import.meta.env.VITE_GEOAPIFY_API_KEY;
 const HostelList = () => {
     const navigate = useNavigate();
 

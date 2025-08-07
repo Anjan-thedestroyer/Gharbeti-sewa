@@ -7,7 +7,8 @@ import white_arrow from '../assets/edusity_assets/white-arrow.png'
 import { useState } from 'react'
 import axiosInstance from '../utils/axios'
 import axios from 'axios'
-const GEOAPIFY_API_KEY = 'bce86ce19aaa4d6db5f9307c35caff9a';
+
+const GEOAPIFY_API_KEY = import.meta.env.VITE_GEOAPIFY_API_KEY;
 
 function Contact() {
   const [result, setResult] = useState("");
@@ -61,7 +62,7 @@ function Contact() {
         const response = await axios.get('https://api.geoapify.com/v1/geocode/autocomplete', {
           params: {
             text: locationSearchTerm,
-            filter: 'countrycode:np', // restrict to Nepal
+            filter: 'countrycode:np',
             limit: 15,
             apiKey: GEOAPIFY_API_KEY,
           },
@@ -98,7 +99,8 @@ function Contact() {
     setResult("Sending....");
     const formData = new FormData(event.target);
 
-    formData.append("access_key", "b9ac6fda-f18d-4c76-b852-2d88fe61bf46");
+    formData.append("access_key", import.meta.env.VITE_ACCESS_KEY);
+
 
     try {
       const give = await axiosInstance.post('/freelance/add', Data)

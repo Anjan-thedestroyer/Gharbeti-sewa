@@ -37,4 +37,4 @@ ${urls
 `;
 
 fs.writeFileSync('./public/sitemap.xml', sitemap);
-console.log('✅ Sitemap generated in public/sitemap.xml');
+console.log('Sitemap generated in public/sitemap.xml');

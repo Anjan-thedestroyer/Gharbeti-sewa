@@ -1,16 +1,40 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import sitemap from 'vite-plugin-sitemap' // ✅ default import
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    sitemap({
+      hostname: 'https://gharbeti-sewa.com',
+      urls: [
+        '/',
+        '/gharbeti',
+        '/login',
+        '/register',
+        '/unverified',
+        '/verify-email',
+        '/list-buyer',
+        '/privacy',
+        '/terms',
+        '/reset-password',
+        '/forgot-password',
+        '/verification-otp',
+        '/list-freelancer',
+        '/accepted-work',
+        '/task-req',
+        '/hostel',
+        '/control-hostel'
+      ]
+    })
+  ],
   build: {
-    outDir: 'dist', // default but explicit
+    outDir: 'dist',
   },
   server: {
-    historyApiFallback: true, // for local dev
+    historyApiFallback: true,
   },
   preview: {
-    historyApiFallback: true, // for `vite preview`
+    historyApiFallback: true,
   }
 })

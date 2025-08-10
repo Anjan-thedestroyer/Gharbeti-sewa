@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gharbeti-sewa.com/sitemap.xml

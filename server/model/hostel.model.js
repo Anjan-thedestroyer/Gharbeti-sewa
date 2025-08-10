@@ -11,9 +11,8 @@ const HostelSchema = new mongoose.Schema({
     },
 
     location: {
-        raw: { type: String, required: true },
-        normalized: { type: String },
-        primary: { type: String }
+        type: String, required: true
+
     },
 
     description: {
@@ -90,6 +89,7 @@ HostelSchema.pre('save', function (next) {
             .slice(0, 2)
             .join(', ');
     }
+
     next();
 });
 

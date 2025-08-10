@@ -288,8 +288,8 @@ export async function getHostelByLocation(req, res) {
             });
         }
 
-        const extractPrimaryLocation = (loc) => {
-            return loc
+        const extractPrimaryLocation = (address) => {
+            return address
                 .split(',')
                 .map(part => part.trim())
                 .filter(part => {
@@ -315,8 +315,7 @@ export async function getHostelByLocation(req, res) {
         let hostels = await HostelModel.find({
             verified: true,
             $or: [
-                { 'location.normalized': { $regex: locationRegex } },
-                { 'location': { $regex: locationRegex } }
+                { location: { $regex: locationRegex } },
             ]
         })
             .populate('userId')
@@ -326,8 +325,8 @@ export async function getHostelByLocation(req, res) {
             hostels = await HostelModel.find({
                 verified: true,
                 $or: [
-                    { 'location.primary': { $regex: searchLocation, $options: 'i' } },
-                    { 'location': { $regex: searchLocation, $options: 'i' } } // fallback
+                    { location: { $regex: searchLocation, $options: 'i' } },
+
                 ]
             })
                 .populate('userId')

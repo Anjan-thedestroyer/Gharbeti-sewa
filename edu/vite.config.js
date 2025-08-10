@@ -8,7 +8,6 @@ export default defineConfig({
   plugins: [
     react(),
 
-    // Ensure dist exists before sitemap writes
     {
       name: 'ensure-dist-folder',
       closeBundle() {
@@ -19,11 +18,8 @@ export default defineConfig({
       },
     },
 
-    sitemap({
-      hostname: 'https://gharbeti-sewa.com',
-      robots: true, // <-- explicitly tell it to generate robots.txt
-      outDir: 'dist',
-      urls: [
+    sitemap(
+      [
         '/',
         '/gharbeti',
         '/login',
@@ -41,8 +37,13 @@ export default defineConfig({
         '/task-req',
         '/hostel',
         '/control-hostel'
-      ]
-    })
+      ],
+      {
+        hostname: 'https://gharbeti-sewa.com',
+        robots: true,
+        outDir: 'dist'
+      }
+    )
   ],
   build: {
     outDir: 'dist'

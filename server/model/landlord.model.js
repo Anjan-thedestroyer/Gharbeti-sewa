@@ -6,62 +6,60 @@ const LandSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+
+        // Structured location
         location: {
-            type: String,
-            required: true,
+            raw: { type: String, required: true },
+            normalized: { type: String },
+            primary: { type: String },
         },
 
+        // Coordinates for geospatial queries
         coordinate: {
-            lon: {
-                type: String,
-            },
-            lat: {
-                type: String,
-            }
+            lon: { type: Number },
+            lat: { type: Number }
         },
+
         Contact_no1: {
             type: String,
             validate: {
-                validator: function (v) {
-                    return /^\d{10}$/.test(v);
-                },
+                validator: v => /^\d{10}$/.test(v),
                 message: props => `${props.value} is not a valid 10-digit phone number!`
             },
         },
         Contact_no2: {
             type: String,
             validate: {
-                validator: function (v) {
-                    return /^\d{10}$/.test(v);
-                },
+                validator: v => /^\d{10}$/.test(v),
                 message: props => `${props.value} is not a valid 10-digit phone number!`
             },
         },
-        shutter: {
-            type: String
-        },
+
+        shutter: { type: String },
+
         price: {
             type: Number,
             default: 1000,
         },
+
         verified: {
             type: Boolean,
             default: false,
         },
+
         Applicants: {
             type: Number,
             default: 0
         },
+
         Applicants_details: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'buyer'
         }],
-        length: {
-            type: Number,
-        },
-        width: {
-            type: Number,
-        },
+
+        length: { type: Number },
+        width: { type: Number },
+
         room: {
             type: Number,
             default: 0,
@@ -70,13 +68,14 @@ const LandSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-        image: [{
-            type: String,
-        }],
+
+        image: [{ type: String }],
+
         description: {
             type: String,
             default: "",
         },
+
         sold: {
             type: Boolean,
             default: false
@@ -86,7 +85,6 @@ const LandSchema = new mongoose.Schema(
 );
 
 LandSchema.pre('save', function (next) {
-    // Safely handle location.raw
     if (this.isModified('location.raw') && this.location?.raw) {
         const parts = this.location.raw.split(',').map(part => part.trim());
 
@@ -103,13 +101,6 @@ LandSchema.pre('save', function (next) {
             .join(', ');
     }
 
-    // Safely handle dimensions
-    if (this.isModified('dimensions')) {
-        if (this.dimensions?.length && this.dimensions?.width) {
-            this.dimensions.area = this.dimensions.length * this.dimensions.width;
-        }
-    }
-
     next();
 });
 
@@ -119,12 +110,8 @@ LandSchema.index({
     description: 'text',
     name: 'text'
 });
-LandSchema.index({ location: "text", name: "text", description: "text" });
 
-LandSchema.index({
-    'coordinate.lon': 1,
-    'coordinate.lat': 1
-});
+LandSchema.index({ coordinate: '2dsphere' });
 
 const LandModel = mongoose.model("Land", LandSchema);
 export default LandModel;

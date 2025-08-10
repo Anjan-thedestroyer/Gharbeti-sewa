@@ -56,7 +56,6 @@ axiosInstance.interceptors.response.use(
                     localStorage.removeItem('status');
 
 
-                    window.location.href = '/';
                 }
 
                 console.error("Refresh token failed:", error.message);

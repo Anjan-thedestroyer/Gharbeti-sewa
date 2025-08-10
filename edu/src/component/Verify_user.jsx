@@ -49,9 +49,9 @@ const VerifyEmail = () => {
     return (
         <>
             <Helmet>
-                <title>Email Verification | Your Site Name</title>
+                <title>Email Verification | Gharbeti-sewa</title>
                 <meta name="description" content="Verify your email address to complete your account registration." />
-                <meta property="og:title" content="Email Verification | Your Site Name" />
+                <meta property="og:title" content="Email Verification | Gharbeti-sewa" />
                 <meta property="og:description" content="Complete your account setup by verifying your email address." />
                 <link rel="canonical" href={`${window.location.origin}/verify-email`} />
                 <script type="application/ld+json">

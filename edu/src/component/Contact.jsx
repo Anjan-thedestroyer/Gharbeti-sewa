@@ -7,6 +7,7 @@ import white_arrow from '../assets/edusity_assets/white-arrow.png'
 import { useState } from 'react'
 import axiosInstance from '../utils/axios'
 import axios from 'axios'
+import esewa from '../assets/edusity_assets/esewa.jpg'
 
 const GEOAPIFY_API_KEY = import.meta.env.VITE_GEOAPIFY_API_KEY;
 
@@ -153,6 +154,8 @@ function Contact() {
               <a href="tel:+9779766004113" itemProp="telephone">+977 976 600 4113</a>
             </li>
           </ul>
+          <h1 className='Detail'>Esewa Payment QR</h1>
+          <img className='QR' src={esewa} alt="esewa" height='15px' />
         </address>
       </section>
 

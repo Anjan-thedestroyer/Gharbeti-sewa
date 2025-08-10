@@ -56,7 +56,6 @@ const Searchbar = ({ onPlaceSelect }) => {
 
         const fetchPlaces = async () => {
             try {
-                // GEOAPIFY autocomplete API with Nepal country filter
                 const response = await axios.get('https://api.geoapify.com/v1/geocode/autocomplete', {
                     params: {
                         text: `${searchTerm} Nepal`,

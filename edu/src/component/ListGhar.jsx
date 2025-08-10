@@ -37,7 +37,6 @@ const ListGhar = ({ data }) => {
                 params: { location }
             });
             setLands(response.data.data);
-            console.log(response.data)
         } catch (error) {
             console.error("Search error:", error);
             setError("Failed to fetch properties. Please try again.");
@@ -77,6 +76,20 @@ const ListGhar = ({ data }) => {
     const calculateArea = (width, length) => {
         if (width && length) return width * length;
         return null;
+    };
+
+    const openGoogleMaps = (location, coordinates) => {
+        let mapsUrl = 'https://www.google.com/maps/search/?api=1';
+
+        if (coordinates && coordinates.latitude && coordinates.longitude) {
+            mapsUrl += `&query=${coordinates.latitude},${coordinates.longitude}`;
+        } else if (location) {
+            mapsUrl += `&query=${encodeURIComponent(location)}`;
+        } else {
+            return;
+        }
+
+        window.open(mapsUrl, '_blank');
     };
 
     const pageTitle = `${isHostel ? 'Hostel' : 'Property'} Listings in ${data || 'Nepal'}`;
@@ -185,8 +198,10 @@ const ListGhar = ({ data }) => {
                                         <div className="property-details">
                                             <header className="property-header">
                                                 <h2 className="property-location">{land.location}</h2>
-                                                <div className="property-price">
-                                                    <span>{land.price?.toLocaleString() || 'Price on request'}</span>
+
+                                                <div className="meta-item property-price">
+                                                    <span className="meta-label">Price: Rs</span>
+                                                    <span className="meta-value">{land.price?.toLocaleString() || 'Price on request'}</span>
                                                 </div>
                                             </header>
 
@@ -245,6 +260,20 @@ const ListGhar = ({ data }) => {
                                                     )}
                                                 </div>
                                             </div>
+
+                                            {/* Google Maps Button */}
+                                            <button
+                                                className="maps-button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    openGoogleMaps(land.location, land.coordinates);
+                                                }}
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                                </svg>
+                                                View on Map
+                                            </button>
                                         </div>
                                     </article>
                                 );

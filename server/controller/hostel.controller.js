@@ -75,7 +75,7 @@ export async function verifyHostel(req, res) {
         const hostel = await HostelModel.findByIdAndUpdate(
             id,
             {
-                $set: { isVerified: true }
+                $set: { verified: true }
 
             }, { new: true })
         if (!hostel) {
@@ -288,7 +288,6 @@ export async function getHostelByLocation(req, res) {
             });
         }
 
-        // Step 1: Clean and extract primary location parts
         const extractPrimaryLocation = (loc) => {
             return loc
                 .split(',')
@@ -305,7 +304,6 @@ export async function getHostelByLocation(req, res) {
 
         const searchLocation = extractPrimaryLocation(location);
 
-        // Step 2: Build regex with positive lookahead for unordered matching
         const regexPattern = searchLocation
             .split(',')
             .map(part => part.trim())
@@ -314,22 +312,24 @@ export async function getHostelByLocation(req, res) {
             .join('');
         const locationRegex = new RegExp(regexPattern, 'i');
 
-        // Step 3: First try flexible regex match
         let hostels = await HostelModel.find({
             verified: true,
-            location: { $regex: locationRegex }
+            $or: [
+                { 'location.normalized': { $regex: locationRegex } },
+                { 'location': { $regex: locationRegex } }
+            ]
         })
-            .sort({ sold: 1 }) // optional: remove if no 'sold' field
             .populate('userId')
             .populate('buyer');
 
-        // Step 4: If nothing found, fallback to simpler loose regex
         if (hostels.length === 0) {
             hostels = await HostelModel.find({
                 verified: true,
-                location: { $regex: searchLocation, $options: 'i' }
+                $or: [
+                    { 'location.primary': { $regex: searchLocation, $options: 'i' } },
+                    { 'location': { $regex: searchLocation, $options: 'i' } } // fallback
+                ]
             })
-                .sort({ sold: 1 }) // optional
                 .populate('userId')
                 .populate('buyer');
         }
@@ -348,7 +348,6 @@ export async function getHostelByLocation(req, res) {
         });
     }
 }
-
 
 export async function getHostelByPriceAndAddress(req, res) {
     try {

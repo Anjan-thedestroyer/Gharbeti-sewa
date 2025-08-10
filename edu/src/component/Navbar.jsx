@@ -91,6 +91,7 @@ const Navbar = ({ color }) => {
       await axiosInstance.get('/user/logout');
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('status');
       localStorage.removeItem('myData');
       window.location.href = '/';
       window.dispatchEvent(new Event('auth-change'));

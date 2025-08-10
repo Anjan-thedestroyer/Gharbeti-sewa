@@ -96,7 +96,6 @@ const TaskReq = () => {
                     <meta name="keywords" content="freelancer tasks, task management, job assignments, freelance work" />
                 </Helmet>
 
-                {/* Alert Notification */}
                 {alert.show && (
                     <div className={`alert alert-${alert.type}`}>
                         {alert.message}

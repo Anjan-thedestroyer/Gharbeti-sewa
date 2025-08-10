@@ -22,6 +22,7 @@ const PropertyDetail = ({ propertyId, onClose, type }) => {
                     ? `/hostels/get/${propertyId}`
                     : `/landlords/${propertyId}`;
                 const response = await axiosInstance.get(url);
+                console.log(response.data.data)
                 setProperty(response.data.data);
                 setError(null);
             } catch (err) {
@@ -180,13 +181,7 @@ const PropertyDetail = ({ propertyId, onClose, type }) => {
                             )}
                         </div>
 
-                        <button
-                            onClick={() => handleApply(property._id)}
-                            className="status-badge1 verified"
-                            aria-label={`Apply for this ${propertyType.toLowerCase()}`}
-                        >
-                            APPLY NOW
-                        </button>
+
 
                         <div className="property-info">
                             <div className="property-header">
@@ -247,7 +242,7 @@ const PropertyDetail = ({ propertyId, onClose, type }) => {
                                     {property.Applicants !== 0 && (
                                         <div className="spec-item">
                                             <span className="spec-value">{property.Applicants}</span>
-                                            <span className="spec-label">Number of applicants</span>
+                                            <span className="spec-label">Number of people applied</span>
                                         </div>
                                     )}
                                     {Number(property.shutter) > 0 && (
@@ -297,6 +292,13 @@ const PropertyDetail = ({ propertyId, onClose, type }) => {
                                     </div>
                                 )}
                             </div>
+                            <button
+                                onClick={() => handleApply(property._id)}
+                                className="status-badge1 verified"
+                                aria-label={`Apply for this ${propertyType.toLowerCase()}`}
+                            >
+                                APPLY NOW
+                            </button>
                         </div>
                     </div>
                 </div>

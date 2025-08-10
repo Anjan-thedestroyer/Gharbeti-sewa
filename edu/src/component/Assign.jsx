@@ -14,7 +14,6 @@ const Assign = ({ freelancerIds, RoomId, onClose }) => {
         setError(null);
 
         try {
-            // Send array of freelancer IDs
             const response = await axiosInstance.post(`/freelance/assign/${RoomId}`, {
                 freelancerIds,
                 description

@@ -65,7 +65,7 @@ const Login = () => {
       <Helmet>
         <title>Login | Gharbeti-sewa</title>
         <meta name="description" content="Log in to your account to access exclusive features and manage your properties." />
-        <meta property="og:title" content="Login | Your Website Name" />
+        <meta property="og:title" content="Login | Gharbeti-sewa" />
         <meta property="og:description" content="Log in to your account to access exclusive features and manage your properties." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={window.location.href} />

@@ -12,11 +12,11 @@ const Footer = () => {
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "Edusity",
-              "url": "https://www.edusity.com",
+              "name": "Gharbeti sewa",
+              "url": "https://www.gharbeti-sewa.com",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://www.edusity.com/search?q={search_term_string}",
+                "target": "https://www.gharbeti-sewa.com/search?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             }

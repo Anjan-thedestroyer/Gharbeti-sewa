@@ -25,7 +25,7 @@ const UnVerified = () => {
 
                 // Only proceed if status in localStorage is "isAdmin"
                 const status = localStorage.getItem("status");
-                if (status !== "isAdmin") {
+                if (status !== "IsAdmin") {
                     setError("Unauthorized: Admin access only");
                     setSuccess(false);
                     return;

@@ -14,13 +14,23 @@ const UnVerified = () => {
     const [loading, setLoading] = useState(true);
     const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
     const [assigningToId, setAssigningToId] = useState(null);
-    const [assignLocation, setAssignLocation] = useState(null)
+    const [assignLocation, setAssignLocation] = useState(null);
     const navigate = useNavigate();
-    const menuRef = useRef()
+    const menuRef = useRef();
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
+
+                // Only proceed if status in localStorage is "isAdmin"
+                const status = localStorage.getItem("status");
+                if (status !== "isAdmin") {
+                    setError("Unauthorized: Admin access only");
+                    setSuccess(false);
+                    return;
+                }
+
                 await Promise.all([getLandlords(), getHostels()]);
                 setSuccess(true);
             } catch (error) {
@@ -34,17 +44,18 @@ const UnVerified = () => {
 
         fetchData();
     }, []);
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setBottomSheetOpen(false)
+                setBottomSheetOpen(false);
             }
-        }
-        document.addEventListener('mousedown', handleClickOutside)
+        };
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [])
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const getLandlords = async () => {
         const response = await axiosInstance.get('/landlords/');
@@ -70,25 +81,10 @@ const UnVerified = () => {
     };
 
     const handleAssignClick = (id, location) => {
-        setAssignLocation(location)
+        setAssignLocation(location);
         setAssigningToId(id);
         setBottomSheetOpen(true);
     };
-
-    // const handleFreelancerSelect = async (freelancer) => {
-    //     try {
-    //         await axiosInstance.post(`/assign`, {
-    //             freelancerId: freelancer._id,
-    //             landlordId: assigningToId
-    //         });
-    //         setLandlords(prev => prev.filter(l => l._id !== assigningToId));
-    //         setBottomSheetOpen(false);
-    //         setAssigningToId(null);
-    //     } catch (error) {
-    //         console.error("Assignment failed:", error);
-    //         setError("Could not assign freelancer");
-    //     }
-    // };
 
     const renderEntityCard = (entity, type) => {
         const entityType = type === 'landlord' ? 'RentalProperty' : 'Hostel';
@@ -118,13 +114,11 @@ const UnVerified = () => {
                     <button onClick={() => handleVerify(entity._id, type)} className="verify-btn">
                         Verify
                     </button>
-                    {
-                        type === 'landlord' && (
-                            <button onClick={() => handleAssignClick(entity._id, entity.location)} className="verify-btn">
-                                Assign
-                            </button>
-                        )
-                    }
+                    {type === 'landlord' && (
+                        <button onClick={() => handleAssignClick(entity._id, entity.location)} className="verify-btn">
+                            Assign
+                        </button>
+                    )}
                 </div>
                 <meta itemProp="availability" content="https://schema.org/PreOrder" />
             </li>
@@ -146,8 +140,7 @@ const UnVerified = () => {
                     </div>
                 ) : error ? (
                     <div className="error-message" role="alert">
-                        <p>Error: {error}</p>
-                        <button onClick={() => window.location.reload()} className="retry-btn">Retry</button>
+                        <p>{error}</p>
                     </div>
                 ) : (
                     <>

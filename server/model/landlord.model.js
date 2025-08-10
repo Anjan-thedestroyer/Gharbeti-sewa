@@ -9,9 +9,8 @@ const LandSchema = new mongoose.Schema(
 
         // Structured location
         location: {
-            raw: { type: String, required: true },
-            normalized: { type: String },
-            primary: { type: String },
+            type: String, required: true
+
         },
 
         // Coordinates for geospatial queries

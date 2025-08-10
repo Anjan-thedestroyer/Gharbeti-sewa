@@ -8,7 +8,7 @@ import './VerifyEmail.css';
 const VerifyEmail = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const [status, setStatus] = useState('verifying'); // 'verifying', 'success', 'error'
+    const [status, setStatus] = useState('verifying');
     const [countdown, setCountdown] = useState(5);
 
     useEffect(() => {
@@ -23,7 +23,6 @@ const VerifyEmail = () => {
                 const res = await axiosInstance.get(`/user/verify-email/${code}`);
                 if (res.data.success) {
                     setStatus('success');
-                    // Start countdown
                     const timer = setInterval(() => {
                         setCountdown(prev => (prev > 0 ? prev - 1 : 0));
                     }, 1000);

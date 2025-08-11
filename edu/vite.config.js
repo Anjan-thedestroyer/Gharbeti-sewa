@@ -17,10 +17,8 @@ export default defineConfig({
         }
       },
     },
-
-    // Generate sitemap
     sitemap({
-      hostname: 'https://gharbeti-sewa.com',
+      hostname: import.meta.env.SITE_URL || 'https://gharbeti-sewa.com',
       dynamicRoutes: [
         '/', '/gharbeti', '/login', '/register', '/unverified',
         '/verify-email', '/list-buyer', '/privacy', '/terms',

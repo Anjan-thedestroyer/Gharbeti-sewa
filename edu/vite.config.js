@@ -19,7 +19,7 @@ export default defineConfig({
     },
 
     sitemap({
-      hostname: 'https://gharbeti-sewa.com', // ✅ Always use production domain
+      hostname: 'https://gharbeti-sewa.com',
       robots: true,
       outDir: 'dist',
       urls: [

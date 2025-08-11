@@ -18,8 +18,11 @@ export default defineConfig({
       },
     },
 
-    sitemap(
-      [
+    sitemap({
+      hostname: 'https://gharbeti-sewa.com', // ✅ Always use production domain
+      robots: true,
+      outDir: 'dist',
+      urls: [
         '/',
         '/gharbeti',
         '/login',
@@ -37,13 +40,8 @@ export default defineConfig({
         '/task-req',
         '/hostel',
         '/control-hostel'
-      ],
-      {
-        hostname: 'https://gharbeti-sewa.com',
-        robots: true,
-        outDir: 'dist'
-      }
-    )
+      ]
+    })
   ],
   build: {
     outDir: 'dist'

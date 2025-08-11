@@ -19,37 +19,21 @@ export default defineConfig({
     },
 
     sitemap({
-      hostname: 'https://gharbeti-sewa.com',
+      hostname: 'https://gharbeti-sewa.com',  // Required; defaults to http://localhost/
+      dynamicRoutes: [
+        '/', '/gharbeti', '/login', '/register', '/unverified',
+        '/verify-email', '/list-buyer', '/privacy', '/terms',
+        '/reset-password', '/forgot-password', '/verification-otp',
+        '/list-freelancer', '/accepted-work', '/task-req',
+        '/hostel', '/control-hostel'
+      ],
       outDir: 'dist',
-      robots: true,
-      urls: [
-        { url: '/' },
-        { url: '/gharbeti' },
-        { url: '/login' },
-        { url: '/register' },
-        { url: '/unverified' },
-        { url: '/verify-email' },
-        { url: '/list-buyer' },
-        { url: '/privacy' },
-        { url: '/terms' },
-        { url: '/reset-password' },
-        { url: '/forgot-password' },
-        { url: '/verification-otp' },
-        { url: '/list-freelancer' },
-        { url: '/accepted-work' },
-        { url: '/task-req' },
-        { url: '/hostel' },
-        { url: '/control-hostel' }
-      ]
-    })
+      changefreq: 'daily',
+      priority: 1,
+      generateRobotsTxt: true
+    }),
   ],
   build: {
-    outDir: 'dist'
+    outDir: 'dist',
   },
-  server: {
-    historyApiFallback: true
-  },
-  preview: {
-    historyApiFallback: true
-  }
-})
+});
